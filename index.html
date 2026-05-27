@@ -1,0 +1,4514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManpowerOS Simple MVP</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #111827;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --red: #ef4444;
+      --soft-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+    }
+
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      background: var(--bg);
+      min-height: 100vh;
+      padding-bottom: 92px;
+      box-shadow: 0 0 40px rgba(15, 23, 42, 0.12);
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.96);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 16px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin-bottom: 4px;
+      letter-spacing: -0.4px;
+    }
+
+    header p {
+      font-size: 12px;
+      color: #d1d5db;
+    }
+
+    .page {
+      display: none;
+      padding: 16px;
+      animation: fadeIn 0.18s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .home-hero {
+      background: radial-gradient(circle at top right, rgba(59,130,246,0.45), transparent 34%), linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 28px rgba(17,24,39,0.25);
+    }
+
+    .home-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .home-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .home-hero p {
+      color: #d1d5db;
+      font-size: 13px;
+    }
+
+    .hero-date {
+      background: rgba(255,255,255,0.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .hero-money {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .hero-money div {
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 9px 7px;
+      text-align: center;
+    }
+
+    .hero-money span {
+      display: block;
+      color: #d1d5db;
+      font-size: 10.5px;
+      margin-bottom: 4px;
+    }
+
+    .hero-money b {
+      font-size: 14px;
+    }
+
+    .hero-stat {
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 11px 8px;
+      text-align: center;
+    }
+
+    .hero-stat span {
+      display: block;
+      color: #d1d5db;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .hero-stat b {
+      font-size: 22px;
+    }
+
+    .alert-card {
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+    }
+
+    .alert-card.good {
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .alert-card strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .quick-grid button {
+      min-height: 62px;
+      margin: 0;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .quick-grid .icon {
+      font-size: 20px;
+    }
+
+    .money-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .money-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .money-item span {
+      display: block;
+      color: #6b7280;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .money-item b {
+      font-size: 15px;
+    }
+
+    .home-focus-card {
+      border: 1px solid #bfdbfe;
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+      border-radius: 22px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .home-focus-card .focus-label {
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .home-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .home-mini-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 10px 6px;
+      text-align: center;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .home-mini-card span {
+      display: block;
+      font-size: 10.5px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .home-mini-card b {
+      font-size: 16px;
+      letter-spacing: -0.4px;
+    }
+
+    .home-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 10px;
+    }
+
+    .home-section-head h2 {
+      margin: 0;
+    }
+
+    .text-btn {
+      width: auto;
+      margin: 0;
+      padding: 8px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .home-event-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(0,0,0,0.05);
+    }
+
+    .home-event-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .home-event-head strong {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .progress-track {
+      height: 9px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #16a34a;
+      border-radius: 999px;
+    }
+
+    .card h3 {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .card .num {
+      font-size: 25px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.7px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 18px 0 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .list-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: var(--card);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .list-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .staff-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .staff-title-row strong {
+      margin-bottom: 0;
+    }
+
+    .staff-index {
+      min-width: 34px;
+      height: 28px;
+      border-radius: 999px;
+      background: #111827;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .staff-name-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 12px;
+      background: var(--card);
+      box-shadow: var(--soft-shadow);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .staff-name-card:active,
+    .client-card:active,
+    .event-card:active,
+    .assign-staff-card:active {
+      transform: scale(0.985);
+    }
+
+    .staff-name-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .staff-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #111827, #374151);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .staff-name-info strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .staff-name-info .muted {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 210px;
+    }
+
+    .staff-arrow {
+      color: #6b7280;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .clickable-card {
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .clickable-card:active {
+      transform: scale(0.98);
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    .detail-row span {
+      color: #6b7280;
+    }
+
+    .detail-row b {
+      text-align: right;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .quick-action-btn {
+      width: 100%;
+      min-height: 72px;
+      margin: 0;
+      border-radius: 16px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .quick-action-btn .icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .quick-action-btn.advance {
+      background: #16a34a;
+    }
+
+    .quick-action-btn.call {
+      background: #2563eb;
+    }
+
+    .quick-action-btn.whatsapp {
+      background: #059669;
+    }
+
+    .quick-action-btn.edit {
+      background: #7c3aed;
+    }
+
+    .staff-profile-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    }
+
+    .duty-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    }
+
+    .duty-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .duty-card-header strong {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .duty-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .duty-meta-item {
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .duty-meta-item span {
+      display: block;
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .duty-meta-item b {
+      font-size: 13px;
+    }
+
+    .duty-action-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .duty-action-row button {
+      margin-top: 0;
+      font-size: 13px;
+      padding: 10px 8px;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .status.green {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-header h2 {
+      margin: 0;
+    }
+
+    .small-close-btn {
+      width: auto;
+      padding: 8px 12px;
+      margin: 0;
+      border-radius: 999px;
+      background: #ef4444;
+      font-size: 13px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      font-size: 14px;
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      border: none;
+      border-radius: 14px;
+      background: var(--primary);
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: -0.1px;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button.secondary {
+      background: #2563eb;
+    }
+
+    button.success {
+      background: #16a34a;
+    }
+
+    button:disabled {
+      background: #d1d5db;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+
+    .app-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 398px;
+      background: #111827;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 14px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+      z-index: 60;
+      display: none;
+      font-size: 13px;
+    }
+
+    .app-toast.show {
+      display: block;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      z-index: 20;
+      padding: 6px 6px 8px;
+      box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .nav-btn {
+      padding: 9px 4px;
+      text-align: center;
+      font-size: 10.5px;
+      color: #6b7280;
+      cursor: pointer;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+
+    .nav-btn.active {
+      color: #ffffff;
+      font-weight: 800;
+      background: #111827;
+    }
+
+    .summary-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .summary-box div {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .summary-box span {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .summary-box b {
+      font-size: 18px;
+      letter-spacing: -0.4px;
+    }
+
+    .side-add-btn {
+      position: fixed;
+      right: calc(50% - 205px);
+      bottom: 92px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 0;
+      margin: 0;
+      background: #16a34a;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: bold;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.22);
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .side-add-btn.show {
+      display: flex;
+    }
+
+    .lead-hero {
+      background: linear-gradient(135deg, #581c87 0%, #9333ea 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(147,51,234,0.22);
+    }
+
+    .lead-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .lead-hero p {
+      color: #f3e8ff;
+      font-size: 13px;
+    }
+
+    .lead-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .lead-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lead-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .lead-actions button {
+      margin-top: 0;
+      padding: 10px 8px;
+      font-size: 12px;
+    }
+
+    .client-hero {
+      background: linear-gradient(135deg, #172554 0%, #2563eb 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(37,99,235,0.22);
+    }
+
+    .client-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .client-hero p {
+      color: #dbeafe;
+      font-size: 13px;
+    }
+
+    .client-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+
+    .client-card-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .client-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: #2563eb;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .client-info strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .client-info .muted {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 210px;
+    }
+
+    .client-money-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .mini-pill {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #374151;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .client-event-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    }
+
+    .client-event-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .event-hero {
+      background: linear-gradient(135deg, #431407 0%, #ea580c 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(234,88,12,0.22);
+    }
+
+    .event-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .event-hero p {
+      color: #ffedd5;
+      font-size: 13px;
+    }
+
+    .event-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+
+    .event-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .event-card-head strong {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .event-action-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .event-action-row button {
+      margin-top: 0;
+      padding: 10px 6px;
+      font-size: 12px;
+    }
+
+    .assign-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #10b981 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(16,185,129,0.22);
+    }
+
+    .assign-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .assign-hero p {
+      color: #d1fae5;
+      font-size: 13px;
+    }
+
+    .assign-event-card {
+      border: 1px solid #d1fae5;
+      background: #ecfdf5;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .assign-staff-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(0,0,0,0.04);
+    }
+
+    .assign-staff-main {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .assign-staff-actions {
+      width: 92px;
+      flex-shrink: 0;
+    }
+
+    .assign-staff-actions button {
+      margin-top: 0;
+      padding: 10px 6px;
+      font-size: 12px;
+    }
+
+    .assign-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .assign-chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #374151;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .assign-chip.good {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .assign-chip.bad {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .assign-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .assign-tabs button {
+      margin-top: 0;
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .assign-tabs button.active-tab {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .payment-hero {
+      background: linear-gradient(135deg, #14532d 0%, #22c55e 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(34,197,94,0.22);
+    }
+
+    .payment-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .payment-hero p {
+      color: #dcfce7;
+      font-size: 13px;
+    }
+
+    .payment-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .payment-tabs button {
+      margin-top: 0;
+      background: #f3f4f6;
+      color: #374151;
+      font-size: 12px;
+      padding: 10px 6px;
+    }
+
+    .payment-tabs button.active-tab {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .payment-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .payment-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .payment-action-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .payment-action-row button {
+      margin-top: 0;
+      font-size: 12px;
+      padding: 10px 8px;
+    }
+
+    .leader-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 11px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .more-hero {
+      background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 26px rgba(79,70,229,0.22);
+    }
+
+    .more-hero h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .more-hero p {
+      color: #e0e7ff;
+      font-size: 13px;
+    }
+
+    .more-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 12px;
+      background: var(--card);
+      box-shadow: var(--soft-shadow);
+      cursor: pointer;
+    }
+
+    .more-card-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .more-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: #eef2ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .more-info strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .print-area {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .app {
+        max-width: none;
+        box-shadow: none;
+        padding-bottom: 0;
+        background: #ffffff;
+      }
+
+      header,
+      .bottom-nav,
+      .app-toast,
+      .side-add-btn,
+      main {
+        display: none !important;
+      }
+
+      .print-area {
+        display: block;
+        padding: 24px;
+        color: #111827;
+        font-family: Arial, sans-serif;
+      }
+
+      .print-area h1 {
+        font-size: 24px;
+        margin-bottom: 6px;
+      }
+
+      .print-area h2 {
+        font-size: 18px;
+        margin: 22px 0 10px;
+        border-bottom: 1px solid #d1d5db;
+        padding-bottom: 6px;
+      }
+
+      .print-meta {
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-size: 13px;
+      }
+
+      .print-table th,
+      .print-table td {
+        border: 1px solid #d1d5db;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .print-table th {
+        background: #f3f4f6;
+      }
+
+      .print-footer {
+        margin-top: 24px;
+        font-size: 12px;
+        color: #6b7280;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .side-add-btn {
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>ManpowerOS</h1>
+      <p>Simple MVP for event staff management</p>
+    </header>
+
+    <main>
+      <section id="dashboard" class="page active">
+        <div class="home-hero">
+          <div class="home-hero-top">
+            <div>
+              <h2>Owner Dashboard</h2>
+              <p>Today manpower control center</p>
+            </div>
+            <div class="hero-date" id="homeDate">Today</div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><span>Events</span><b id="todayEvents">0</b></div>
+            <div class="hero-stat"><span>Required</span><b id="requiredStaff">0</b></div>
+            <div class="hero-stat"><span>Pending</span><b id="pendingStaff">0</b></div>
+          </div>
+          <div class="hero-money">
+            <div><span>Bill</span><b id="homeHeroBill">₹0</b></div>
+            <div><span>Cost</span><b id="homeHeroCost">₹0</b></div>
+            <div><span>Profit</span><b id="homeHeroProfit">₹0</b></div>
+          </div>
+        </div>
+
+
+        <div id="homeAlertBox"></div>
+        <div id="homeFocusEvent"></div>
+
+        <div class="home-mini-grid">
+          <div class="home-mini-card"><span>Clients</span><b id="homeClientCount">0</b></div>
+          <div class="home-mini-card"><span>Staff</span><b id="homeStaffCount">0</b></div>
+          <div class="home-mini-card"><span>Available</span><b id="homeAvailableCount">0</b></div>
+          <div class="home-mini-card"><span>Client Due</span><b id="homeClientDue">₹0</b></div>
+        </div>
+
+        <div class="quick-grid">
+          <button class="secondary" onclick="showPageById('events')"><span class="icon">📅</span><span>Events</span></button>
+          <button class="secondary" onclick="showPageById('staff')"><span class="icon">👥</span><span>Staff</span></button>
+          <button class="secondary" onclick="showPageById('assign')"><span class="icon">✅</span><span>Assign</span></button>
+          <button class="secondary" onclick="showPageById('payments')"><span class="icon">₹</span><span>Payments</span></button>
+        </div>
+
+        <div class="home-section-head">
+          <h2 class="section-title">Event Status</h2>
+          <button class="text-btn" onclick="showPageById('events')">View All</button>
+        </div>
+        <div id="dashboardEvents"></div>
+      </section>
+
+      <section id="leads" class="page">
+        <div class="lead-hero">
+          <h2>Leads</h2>
+          <p>Track enquiries and convert them into clients and events</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Total Leads</h3><div class="num" id="leadTotalCount">0</div></div>
+          <div class="card"><h3>New Leads</h3><div class="num" id="leadNewCount">0</div></div>
+          <div class="card"><h3>Confirmed</h3><div class="num" id="leadConfirmedCount">0</div></div>
+          <div class="card"><h3>Lost</h3><div class="num" id="leadLostCount">0</div></div>
+        </div>
+
+        <button id="leadSideAddBtn" class="side-add-btn" onclick="showAddLeadCard()">+</button>
+
+        <div id="addLeadCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Add Lead</h2>
+            <button class="small-close-btn" onclick="hideAddLeadCard()">Close</button>
+          </div>
+          <div class="form">
+            <label>Client Name</label>
+            <input id="leadClient" placeholder="Example: Shree Caterers" />
+            <label>Mobile Number</label>
+            <input id="leadMobile" placeholder="9876543210" />
+            <label>Event Date</label>
+            <input id="leadDate" type="date" />
+            <label>Location</label>
+            <input id="leadLocation" placeholder="Ahmedabad" />
+            <label>Staff Needed</label>
+            <input id="leadStaff" placeholder="30 Waiters, 3 Captains" />
+            <label>Status</label>
+            <select id="leadStatus">
+              <option>New</option>
+              <option>Contacted</option>
+              <option>Confirmed</option>
+              <option>Lost</option>
+            </select>
+            <button onclick="addLead()">Add Lead</button>
+          </div>
+        </div>
+
+        <h2 class="section-title">Lead List</h2>
+        <input id="leadSearch" placeholder="Search lead, mobile, location, staff" oninput="renderLeads()" />
+        <label>Filter Status</label>
+        <select id="leadStatusFilter" onchange="renderLeads()">
+          <option value="All">All</option>
+          <option>New</option>
+          <option>Contacted</option>
+          <option>Confirmed</option>
+          <option>Lost</option>
+        </select>
+        <div id="leadList"></div>
+      </section>
+
+      <section id="clients" class="page">
+        <div class="client-hero">
+          <h2>Clients</h2>
+          <p>Manage caterers, hotels, resorts and event planners</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Total Clients</h3><div class="num" id="clientTotalCount">0</div></div>
+          <div class="card"><h3>Pending Pay</h3><div class="num" id="clientPendingTotal">₹0</div></div>
+          <div class="card"><h3>Total Events</h3><div class="num" id="clientEventTotal">0</div></div>
+          <div class="card"><h3>Total Bill</h3><div class="num" id="clientBillTotal">₹0</div></div>
+        </div>
+
+        <button id="clientSideAddBtn" class="side-add-btn" onclick="showAddClientCard()">+</button>
+
+        <div id="addClientCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Add Client</h2>
+            <button class="small-close-btn" onclick="hideAddClientCard()">Close</button>
+          </div>
+          <div class="form">
+          <label>Client Name</label>
+          <input id="clientName" placeholder="Royal Caterers" />
+          <label>Mobile Number</label>
+          <input id="clientMobile" placeholder="9876543210" />
+          <label>Client Type</label>
+          <select id="clientType">
+            <option>Caterer</option>
+            <option>Hotel</option>
+            <option>Resort</option>
+            <option>Marriage Hall</option>
+            <option>Event Planner</option>
+            <option>Other</option>
+          </select>
+          <label>City / Area</label>
+          <input id="clientCity" placeholder="Ahmedabad" />
+          <button onclick="addClient()">Add Client</button>
+          </div>
+        </div>
+
+        <h2 class="section-title">Client List</h2>
+        <input id="clientSearch" placeholder="Search client, mobile, type, city" oninput="renderClients()" />
+        <label>Filter Client Type</label>
+        <select id="clientTypeFilter" onchange="renderClients()">
+          <option value="All">All</option>
+          <option>Caterer</option>
+          <option>Hotel</option>
+          <option>Resort</option>
+          <option>Marriage Hall</option>
+          <option>Event Planner</option>
+          <option>Other</option>
+        </select>
+        <label>Filter Payment</label>
+        <select id="clientPaymentFilter" onchange="renderClients()">
+          <option value="All">All</option>
+          <option value="Pending">Payment Pending</option>
+          <option value="Clear">Clear</option>
+        </select>
+        <div id="clientList"></div>
+      </section>
+
+      <section id="clientDetail" class="page">
+        <button onclick="showPageById('clients')">← Back to Clients</button>
+        <div id="clientDetailContent"></div>
+
+        <div id="editClientCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Edit Client</h2>
+            <button class="small-close-btn" onclick="hideEditClientCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="editClientId" type="hidden" />
+            <label>Client Name</label>
+            <input id="editClientName" />
+            <label>Mobile Number</label>
+            <input id="editClientMobile" />
+            <label>Client Type</label>
+            <select id="editClientType">
+              <option>Caterer</option>
+              <option>Hotel</option>
+              <option>Resort</option>
+              <option>Marriage Hall</option>
+              <option>Event Planner</option>
+              <option>Other</option>
+            </select>
+            <label>City / Area</label>
+            <input id="editClientCity" />
+            <button class="success" onclick="saveClientEdit()">Save Client</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="events" class="page">
+        <div class="event-hero">
+          <h2>Events</h2>
+          <p>Manage event requirements, staff assignment and billing</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Total Events</h3><div class="num" id="eventTotalCount">0</div></div>
+          <div class="card"><h3>Pending Staff</h3><div class="num" id="eventPendingStaffTotal">0</div></div>
+          <div class="card"><h3>Total Bill</h3><div class="num" id="eventBillTotal">₹0</div></div>
+          <div class="card"><h3>Total Profit</h3><div class="num" id="eventProfitTotal">₹0</div></div>
+        </div>
+
+        <button id="eventSideAddBtn" class="side-add-btn" onclick="showAddEventCard()">+</button>
+
+        <div id="addEventCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Add Event</h2>
+            <button class="small-close-btn" onclick="hideAddEventCard()">Close</button>
+          </div>
+          <div class="form">
+          <label>Select Client</label>
+          <select id="eventClient"></select>
+          <label>Event Name</label>
+          <input id="eventName" placeholder="Wedding Reception" />
+          <label>Date</label>
+          <input id="eventDate" type="date" />
+          <label>Time</label>
+          <input id="eventTime" placeholder="5 PM - 12 AM" />
+          <label>Location</label>
+          <input id="eventLocation" placeholder="Event location" />
+          <label>Staff Type</label>
+          <select id="eventStaffType">
+            <option>Waiter</option>
+            <option>Captain</option>
+            <option>Helper</option>
+            <option>Cleaner</option>
+            <option>Cook</option>
+            <option>Security</option>
+          </select>
+          <label>Required Quantity</label>
+          <input id="eventQty" type="number" placeholder="30" />
+          <label>Staff Rate</label>
+          <input id="eventRate" type="number" placeholder="700" />
+          <label>Client Rate</label>
+          <input id="eventClientRate" type="number" placeholder="1000" />
+          <button onclick="addEvent()">Add Event</button>
+          </div>
+        </div>
+        <h2 class="section-title">Event List</h2>
+        <input id="eventSearch" placeholder="Search event, client, location, date" oninput="renderEvents()" />
+        <label>Filter Status</label>
+        <select id="eventStatusFilter" onchange="renderEvents()">
+          <option value="All">All</option>
+          <option value="Staff Pending">Staff Pending</option>
+          <option value="Staff Assigned">Staff Assigned</option>
+        </select>
+        <div id="eventList"></div>
+      </section>
+
+      <section id="eventDetail" class="page">
+        <button onclick="showPageById('events')">← Back to Events</button>
+        <div id="eventDetailContent"></div>
+        <div id="addRequirementCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Add Requirement</h2>
+            <button class="small-close-btn" onclick="hideAddRequirementCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="requirementEventId" type="hidden" />
+            <label>Staff Type</label>
+            <select id="requirementStaffType">
+              <option>Waiter</option>
+              <option>Captain</option>
+              <option>Helper</option>
+              <option>Cleaner</option>
+              <option>Cook</option>
+              <option>Security</option>
+            </select>
+            <label>Required Quantity</label>
+            <input id="requirementQty" type="number" placeholder="10" />
+            <label>Staff Rate</label>
+            <input id="requirementRate" type="number" placeholder="700" />
+            <label>Client Rate</label>
+            <input id="requirementClientRate" type="number" placeholder="1000" />
+            <button onclick="addRequirementLine()">Add Requirement</button>
+          </div>
+        </div>
+
+        <div id="editRequirementCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Edit Requirement</h2>
+            <button class="small-close-btn" onclick="hideEditRequirementCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="editRequirementId" type="hidden" />
+            <input id="editRequirementEventId" type="hidden" />
+            <label>Staff Type</label>
+            <select id="editRequirementStaffType">
+              <option>Waiter</option>
+              <option>Captain</option>
+              <option>Helper</option>
+              <option>Cleaner</option>
+              <option>Cook</option>
+              <option>Security</option>
+            </select>
+            <label>Required Quantity</label>
+            <input id="editRequirementQty" type="number" />
+            <label>Staff Rate</label>
+            <input id="editRequirementRate" type="number" />
+            <label>Client Rate</label>
+            <input id="editRequirementClientRate" type="number" />
+            <button class="success" onclick="saveRequirementEdit()">Save Requirement</button>
+          </div>
+        </div>
+
+        <div id="clientPaymentCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Client Payment</h2>
+            <button class="small-close-btn" onclick="hideClientPaymentCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="clientPaymentEventId" type="hidden" />
+            <div id="clientPaymentSummary"></div>
+            <label>Received Amount</label>
+            <input id="clientPaymentAmount" type="number" placeholder="Enter amount received" />
+            <label>Payment Mode</label>
+            <select id="clientPaymentMode">
+              <option>Cash</option>
+              <option>UPI</option>
+              <option>Bank</option>
+              <option>Cheque</option>
+            </select>
+            <label>Note</label>
+            <input id="clientPaymentNote" placeholder="Optional note" />
+            <button class="success" onclick="saveClientPayment()">Save Client Payment</button>
+          </div>
+        </div>
+
+        <div id="eventLeaderCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Assign Event Leader</h2>
+            <button class="small-close-btn" onclick="hideEventLeaderCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="leaderEventId" type="hidden" />
+            <div id="leaderEventSummary"></div>
+            <label>Select Leader</label>
+            <select id="leaderStaffSelect"></select>
+            <button class="success" onclick="saveEventLeader()">Save Leader</button>
+          </div>
+        </div>
+
+        <div id="editEventCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Edit Event</h2>
+            <button class="small-close-btn" onclick="hideEditEventCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="editEventId" type="hidden" />
+            <label>Select Client</label>
+            <select id="editEventClient"></select>
+            <label>Event Name</label>
+            <input id="editEventName" />
+            <label>Date</label>
+            <input id="editEventDate" type="date" />
+            <label>Time</label>
+            <input id="editEventTime" />
+            <label>Location</label>
+            <input id="editEventLocation" />
+            <label>Default Staff Type</label>
+            <select id="editEventStaffType">
+              <option>Waiter</option>
+              <option>Captain</option>
+              <option>Helper</option>
+              <option>Cleaner</option>
+              <option>Cook</option>
+              <option>Security</option>
+            </select>
+            <label>Default Required Quantity</label>
+            <input id="editEventQty" type="number" />
+            <label>Default Staff Rate</label>
+            <input id="editEventRate" type="number" />
+            <label>Default Client Rate</label>
+            <input id="editEventClientRate" type="number" />
+            <button class="success" onclick="saveEventEdit()">Save Event</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="staff" class="page">
+        <h2 class="section-title">Staff</h2>
+        <div class="grid">
+          <div class="card"><h3>Total Staff</h3><div class="num" id="staffTotalCount">0</div></div>
+          <div class="card"><h3>Available</h3><div class="num" id="staffAvailableCount">0</div></div>
+          <div class="card"><h3>Busy</h3><div class="num" id="staffBusyCount">0</div></div>
+          <div class="card"><h3>Pending Pay</h3><div class="num" id="staffPendingPay">₹0</div></div>
+        </div>
+
+        <button id="staffSideAddBtn" class="side-add-btn" onclick="scrollToAddStaff()">+</button>
+
+        <div id="addStaffCard" class="hidden">
+          <div class="form-header">
+            <h2 id="addStaffTitle" class="section-title">Add Staff</h2>
+            <button class="small-close-btn" onclick="hideAddStaffCard()">Close</button>
+          </div>
+          <div class="form" id="addStaffForm">
+          <label>Staff Name</label>
+          <input id="staffName" placeholder="Ramesh" />
+          <label>Mobile</label>
+          <input id="staffMobile" placeholder="9876543210" />
+          <label>Staff Type</label>
+          <select id="staffType">
+            <option>Waiter</option>
+            <option>Captain</option>
+            <option>Helper</option>
+            <option>Cleaner</option>
+            <option>Cook</option>
+            <option>Security</option>
+          </select>
+          <label>Daily Rate</label>
+          <input id="staffRate" type="number" placeholder="700" />
+          <label>Status</label>
+          <select id="staffStatus">
+            <option>Available</option>
+            <option>Busy</option>
+            <option>Inactive</option>
+            <option>Blacklisted</option>
+          </select>
+          <button onclick="addStaff()">Add Staff</button>
+          </div>
+        </div>
+        <h2 class="section-title">Staff List</h2>
+        <input id="staffSearch" placeholder="Search staff by name, mobile, type" oninput="renderStaff()" />
+        <label>Filter Staff Type</label>
+        <select id="staffTypeFilter" onchange="renderStaff()">
+          <option value="All">All</option>
+          <option>Waiter</option>
+          <option>Captain</option>
+          <option>Helper</option>
+          <option>Cleaner</option>
+          <option>Cook</option>
+          <option>Security</option>
+        </select>
+        <label>Filter Status</label>
+        <select id="staffStatusFilter" onchange="renderStaff()">
+          <option value="All">All</option>
+          <option>Available</option>
+          <option>Busy</option>
+          <option>Inactive</option>
+          <option>Blacklisted</option>
+        </select>
+        <div id="staffList"></div>
+      </section>
+
+      <section id="staffDetail" class="page">
+        <button onclick="showPageById('staff')">← Back to Staff</button>
+        <div id="staffDetailContent"></div>
+
+        <div id="staffAdvanceCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Add Staff Advance</h2>
+            <button class="small-close-btn" onclick="hideStaffAdvanceCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="advanceStaffId" type="hidden" />
+            <div id="advanceStaffSummary"></div>
+            <label>Advance Amount</label>
+            <input id="advanceAmount" type="number" placeholder="5000" />
+            <label>Payment Mode</label>
+            <select id="advanceMode">
+              <option>Cash</option>
+              <option>UPI</option>
+              <option>Bank</option>
+            </select>
+            <label>Note</label>
+            <input id="advanceNote" placeholder="Advance given" />
+            <button class="success" onclick="saveStaffAdvance()">Save Advance</button>
+          </div>
+        </div>
+
+        <div id="editStaffCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Edit Staff</h2>
+            <button class="small-close-btn" onclick="hideEditStaffCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="editStaffId" type="hidden" />
+            <label>Staff Name</label>
+            <input id="editStaffName" />
+            <label>Mobile</label>
+            <input id="editStaffMobile" />
+            <label>Staff Type</label>
+            <select id="editStaffType">
+              <option>Waiter</option>
+              <option>Captain</option>
+              <option>Helper</option>
+              <option>Cleaner</option>
+              <option>Cook</option>
+              <option>Security</option>
+            </select>
+            <label>Daily Rate</label>
+            <input id="editStaffRate" type="number" />
+            <label>Status</label>
+            <select id="editStaffStatus">
+              <option>Available</option>
+              <option>Busy</option>
+              <option>Inactive</option>
+              <option>Blacklisted</option>
+            </select>
+            <label>Leader Capability</label>
+            <select id="editStaffIsLeader">
+              <option value="false">Normal Staff</option>
+              <option value="true">Can be Leader</option>
+            </select>
+            <button class="success" onclick="saveStaffEdit()">Save Staff</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="assign" class="page">
+        <div class="assign-hero">
+          <h2>Assign Staff</h2>
+          <p>Select event, find matching staff and assign quickly</p>
+        </div>
+
+        <label>Select Event</label>
+        <select id="assignEvent" onchange="renderAssignPage()"></select>
+
+        <label>Select Requirement</label>
+        <select id="assignRequirement" onchange="renderAssignPage()"></select>
+
+        <div id="assignEventSummary"></div>
+
+        <label>Search Staff</label>
+        <input id="assignStaffSearch" placeholder="Search name, mobile, type, status" oninput="renderAssignPage()" />
+
+        <label>Filter Staff</label>
+        <select id="assignStaffFilter" onchange="renderAssignPage()">
+          <option value="All">All Staff</option>
+          <option value="Match">Matching Type</option>
+          <option value="Available">Available Only</option>
+          <option value="NotAssigned">Not Assigned To This Event</option>
+        </select>
+
+        <div class="assign-tabs">
+          <button id="assignAvailableTab" class="active-tab" onclick="setAssignTab('available')">Available Staff</button>
+          <button id="assignAssignedTab" onclick="setAssignTab('assigned')">Assigned Staff</button>
+        </div>
+
+        <div id="assignAvailablePanel"></div>
+        <div id="assignmentList" class="hidden"></div>
+      </section>
+
+      <section id="payments" class="page">
+        <div id="staffPaymentCard" class="hidden">
+          <div class="form-header">
+            <h2 class="section-title">Staff Payment</h2>
+            <button class="small-close-btn" onclick="hideStaffPaymentCard()">Close</button>
+          </div>
+          <div class="form">
+            <input id="staffPaymentAssignmentId" type="hidden" />
+            <div id="staffPaymentSummary"></div>
+            <label>Payment Amount</label>
+            <input id="staffPaymentAmount" type="number" placeholder="Enter amount" />
+            <label>Payment Mode</label>
+            <select id="staffPaymentMode">
+              <option>Cash</option>
+              <option>UPI</option>
+              <option>Bank</option>
+            </select>
+            <label>Note</label>
+            <input id="staffPaymentNote" placeholder="Staff payment" />
+            <button class="success" onclick="saveStaffPayment()">Save Staff Payment</button>
+          </div>
+        </div>
+
+        <div class="payment-hero">
+          <h2>Payments</h2>
+          <p>Manage staff attendance, advance deduction and payment status</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Present Staff</h3><div class="num" id="paymentPresentCount">0</div></div>
+          <div class="card"><h3>Absent Staff</h3><div class="num" id="paymentAbsentCount">0</div></div>
+          <div class="card"><h3>Pending Pay</h3><div class="num" id="paymentPendingAmount">₹0</div></div>
+          <div class="card"><h3>Paid Amount</h3><div class="num" id="paymentPaidAmount">₹0</div></div>
+        </div>
+
+        <label>Search Payment</label>
+        <input id="paymentSearch" placeholder="Search staff, event, mobile" oninput="renderPayments()" />
+
+        <label>Filter Event</label>
+        <select id="paymentEventFilter" onchange="renderPayments()"></select>
+
+        <div class="payment-tabs">
+          <button id="paymentAllTab" class="active-tab" onclick="setPaymentTab('all')">All</button>
+          <button id="paymentPendingTab" onclick="setPaymentTab('pending')">Pending</button>
+          <button id="paymentPaidTab" onclick="setPaymentTab('paid')">Paid</button>
+        </div>
+
+        <button class="secondary" onclick="printStaffPaymentReport()">🖨️ Print Staff Payment Report</button>
+
+        <div id="paymentList"></div>
+      </section>
+
+      <section id="more" class="page">
+        <div class="more-hero">
+          <h2>More</h2>
+          <p>Open payments, reports, leads and admin tools</p>
+        </div>
+
+        <h2 class="section-title">Today Action Center</h2>
+        <div class="grid">
+          <div class="card"><h3>Pending Staff</h3><div class="num" id="morePendingStaff">0</div></div>
+          <div class="card"><h3>Staff Pay</h3><div class="num" id="morePendingStaffPay">₹0</div></div>
+          <div class="card"><h3>Client Due</h3><div class="num" id="moreClientDue">₹0</div></div>
+          <div class="card"><h3>Leads</h3><div class="num" id="moreLeadCount">0</div></div>
+        </div>
+
+        <div class="more-card" onclick="showPageById('assign')">
+          <div class="more-card-main">
+            <div class="more-icon">✅</div>
+            <div class="more-info"><strong>Assign Staff</strong><div class="muted">Assign matching staff to event requirements</div></div>
+          </div>
+          <div class="staff-arrow">›</div>
+        </div>
+
+        <div class="more-card" onclick="showPageById('payments')">
+          <div class="more-card-main">
+            <div class="more-icon">₹</div>
+            <div class="more-info"><strong>Payments</strong><div class="muted">Staff payment, advance deduction and print report</div></div>
+          </div>
+          <div class="staff-arrow">›</div>
+        </div>
+
+        <div class="more-card" onclick="showPageById('reports')">
+          <div class="more-card-main">
+            <div class="more-icon">📊</div>
+            <div class="more-info"><strong>Reports</strong><div class="muted">Today events, pending staff, profit and bill summary</div></div>
+          </div>
+          <div class="staff-arrow">›</div>
+        </div>
+
+        <div class="more-card" onclick="showPageById('leads')">
+          <div class="more-card-main">
+            <div class="more-icon">📞</div>
+            <div class="more-info"><strong>Leads</strong><div class="muted">Enquiries, follow-up and convert to event</div></div>
+          </div>
+          <div class="staff-arrow">›</div>
+        </div>
+
+        <div class="more-card" onclick="resetDemoData()">
+          <div class="more-card-main">
+            <div class="more-icon">♻️</div>
+            <div class="more-info"><strong>Reset Demo Data</strong><div class="muted">Clear current local demo data and reload sample data</div></div>
+          </div>
+          <div class="staff-arrow">›</div>
+        </div>
+      </section>
+
+      <section id="reports" class="page">
+        <h2 class="section-title">Reports</h2>
+        <div class="grid">
+          <div class="card"><h3>Today Events</h3><div class="num" id="reportTodayEvents">0</div></div>
+          <div class="card"><h3>Upcoming Events</h3><div class="num" id="reportUpcomingEvents">0</div></div>
+          <div class="card"><h3>Pending Staff</h3><div class="num" id="reportPendingStaff">0</div></div>
+          <div class="card"><h3>Pending Staff Pay</h3><div class="num" id="reportPendingPayment">₹0</div></div>
+          <div class="card"><h3>Pending Client Pay</h3><div class="num" id="reportPendingClientPayment">₹0</div></div>
+          <div class="card"><h3>Total Bill</h3><div class="num" id="reportTotalBill">₹0</div></div>
+          <div class="card"><h3>Total Profit</h3><div class="num" id="reportTotalProfit">₹0</div></div>
+        </div>
+
+        <h2 class="section-title">Today Events</h2>
+        <div id="reportTodayList"></div>
+
+        <h2 class="section-title">Upcoming Events</h2>
+        <div id="reportUpcomingList"></div>
+
+        <h2 class="section-title">Pending Staff Events</h2>
+        <div id="reportPendingList"></div>
+      </section>
+    </main>
+
+    <div id="appToast" class="app-toast"></div>
+    <div id="printArea" class="print-area"></div>
+
+    <nav class="bottom-nav">
+      <div class="nav-btn active" onclick="showPage('dashboard', this)">🏠<br>Home</div>
+      <div class="nav-btn" onclick="showPage('clients', this)">🤝<br>Clients</div>
+      <div class="nav-btn" onclick="showPage('events', this)">📅<br>Events</div>
+      <div class="nav-btn" onclick="showPage('staff', this)">👥<br>Staff</div>
+      <div class="nav-btn" onclick="showPage('more', this)">☰<br>More</div>
+    </nav>
+  </div>
+
+  <script>
+    const defaultLeads = [
+      { client: 'Shree Caterers', mobile: '9876543210', date: '2026-06-10', location: 'Ahmedabad', staff: '30 Waiters', status: 'New' }
+    ];
+
+    const defaultClients = [
+      { id: 1, name: 'Royal Caterers', mobile: '9876543210', type: 'Caterer', city: 'Ahmedabad' },
+      { id: 2, name: 'Shree Caterers', mobile: '9876543211', type: 'Caterer', city: 'Ahmedabad' }
+    ];
+
+    const defaultEvents = [
+      { id: 1, client: 'Royal Caterers', name: 'Wedding Reception', date: '2026-06-10', time: '5 PM - 12 AM', location: 'Ahmedabad', staffType: 'Waiter', required: 30, rate: 700, clientRate: 1000, clientPaid: 0 }
+    ];
+
+    const defaultStaff = [
+      { id: 1, name: 'Ramesh', mobile: '9000000001', type: 'Waiter', rate: 700, status: 'Available' },
+      { id: 2, name: 'Suresh', mobile: '9000000002', type: 'Waiter', rate: 700, status: 'Available' },
+      { id: 3, name: 'Mahesh', mobile: '9000000003', type: 'Captain', rate: 1000, status: 'Available' }
+    ];
+
+    const defaultAssignments = [
+      { id: 1, eventId: 1, staffId: 1, status: 'Assigned', paymentStatus: 'Pending' },
+      { id: 2, eventId: 1, staffId: 2, status: 'Assigned', paymentStatus: 'Pending' }
+    ];
+
+    let clients = JSON.parse(localStorage.getItem('manpoweros_clients')) || defaultClients;
+    let leads = JSON.parse(localStorage.getItem('manpoweros_leads')) || defaultLeads;
+    let events = JSON.parse(localStorage.getItem('manpoweros_events')) || defaultEvents;
+    let staff = JSON.parse(localStorage.getItem('manpoweros_staff')) || defaultStaff;
+    let assignments = JSON.parse(localStorage.getItem('manpoweros_assignments')) || defaultAssignments;
+    let staffAdvances = JSON.parse(localStorage.getItem('manpoweros_staff_advances')) || [];
+    let requirements = JSON.parse(localStorage.getItem('manpoweros_requirements')) || [
+      { id: 1, eventId: 1, staffType: 'Waiter', required: 30, rate: 700, clientRate: 1000 }
+    ];
+    let assignTab = 'available';
+    let paymentTab = 'all';
+
+    function showToast(message) {
+      const toast = document.getElementById('appToast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function saveData() {
+      localStorage.setItem('manpoweros_clients', JSON.stringify(clients));
+      localStorage.setItem('manpoweros_leads', JSON.stringify(leads));
+      localStorage.setItem('manpoweros_events', JSON.stringify(events));
+      localStorage.setItem('manpoweros_staff', JSON.stringify(staff));
+      localStorage.setItem('manpoweros_assignments', JSON.stringify(assignments));
+      localStorage.setItem('manpoweros_staff_advances', JSON.stringify(staffAdvances));
+      localStorage.setItem('manpoweros_requirements', JSON.stringify(requirements));
+    }
+
+    function resetDemoData() {
+      if (!confirm('Reset all data to demo data?')) return;
+      clients = defaultClients;
+      leads = defaultLeads;
+      events = defaultEvents;
+      staff = defaultStaff;
+      assignments = defaultAssignments;
+      staffAdvances = [];
+      requirements = [
+        { id: 1, eventId: 1, staffType: 'Waiter', required: 30, rate: 700, clientRate: 1000 }
+      ];
+      saveData();
+      renderAll();
+    }
+
+    function showPage(pageId, navItem) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      if (navItem) navItem.classList.add('active');
+      toggleStaffSideButton(pageId);
+      renderAll();
+    }
+
+    function showPageById(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      const navMap = {
+        dashboard: 0,
+        clients: 1,
+        clientDetail: 1,
+        events: 2,
+        eventDetail: 2,
+        staff: 3,
+        staffDetail: 3,
+        assign: 4,
+        more: 4,
+        payments: 4,
+        reports: 4,
+        leads: 4
+      };
+      const navIndex = navMap[pageId];
+      if (navIndex !== undefined) {
+        document.querySelectorAll('.nav-btn')[navIndex]?.classList.add('active');
+      }
+
+      toggleStaffSideButton(pageId);
+      renderAll();
+    }
+
+    function toggleStaffSideButton(pageId) {
+      const staffBtn = document.getElementById('staffSideAddBtn');
+      if (staffBtn) staffBtn.classList.toggle('show', pageId === 'staff');
+
+      const clientBtn = document.getElementById('clientSideAddBtn');
+      if (clientBtn) clientBtn.classList.toggle('show', pageId === 'clients');
+
+      const eventBtn = document.getElementById('eventSideAddBtn');
+      if (eventBtn) eventBtn.classList.toggle('show', pageId === 'events');
+
+      const leadBtn = document.getElementById('leadSideAddBtn');
+      if (leadBtn) leadBtn.classList.toggle('show', pageId === 'leads');
+    }
+
+    function showAddLeadCard() {
+      const card = document.getElementById('addLeadCard');
+      if (!card) return;
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('leadClient').focus(), 250);
+    }
+
+    function hideAddLeadCard() {
+      const card = document.getElementById('addLeadCard');
+      if (!card) return;
+      card.classList.add('hidden');
+    }
+
+    function showAddClientCard() {
+      const card = document.getElementById('addClientCard');
+      if (!card) return;
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('clientName').focus(), 250);
+    }
+
+    function hideAddClientCard() {
+      const card = document.getElementById('addClientCard');
+      if (!card) return;
+      card.classList.add('hidden');
+    }
+
+    function showAddEventCard() {
+      const card = document.getElementById('addEventCard');
+      if (!card) return;
+      renderClientDropdown();
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('eventClient').focus(), 250);
+    }
+
+    function hideAddEventCard() {
+      const card = document.getElementById('addEventCard');
+      if (!card) return;
+      card.classList.add('hidden');
+    }
+
+    function scrollToAddStaff() {
+      const card = document.getElementById('addStaffCard');
+      if (!card) return;
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('staffName').focus(), 250);
+    }
+
+    function hideAddStaffCard() {
+      const card = document.getElementById('addStaffCard');
+      if (!card) return;
+      card.classList.add('hidden');
+    }
+
+    function deleteLead(index) {
+      if (!confirm('Delete this lead?')) return;
+      leads.splice(index, 1);
+      saveData();
+      renderAll();
+    }
+
+    function addLead() {
+      const client = document.getElementById('leadClient').value;
+      const mobile = document.getElementById('leadMobile').value;
+      const date = document.getElementById('leadDate').value;
+      const location = document.getElementById('leadLocation').value;
+      const staffNeed = document.getElementById('leadStaff').value;
+      const status = document.getElementById('leadStatus')?.value || 'New';
+
+      if (!client || !mobile) {
+        alert('Please add client name and mobile number');
+        return;
+      }
+
+      leads.push({ client, mobile, date, location, staff: staffNeed, status });
+      saveData();
+      document.getElementById('leadClient').value = '';
+      document.getElementById('leadMobile').value = '';
+      document.getElementById('leadDate').value = '';
+      document.getElementById('leadLocation').value = '';
+      document.getElementById('leadStaff').value = '';
+      if (document.getElementById('leadStatus')) document.getElementById('leadStatus').value = 'New';
+      hideAddLeadCard();
+      showToast(`${client} lead added`);
+      renderAll();
+    }
+
+    function addClient() {
+      const name = document.getElementById('clientName').value;
+      const mobile = document.getElementById('clientMobile').value;
+      const type = document.getElementById('clientType').value;
+      const city = document.getElementById('clientCity').value;
+
+      if (!name || !mobile) {
+        alert('Please add client name and mobile number');
+        return;
+      }
+
+      clients.push({ id: Date.now(), name, mobile, type, city });
+      saveData();
+      showToast(`${name} added to clients`);
+      document.getElementById('clientName').value = '';
+      document.getElementById('clientMobile').value = '';
+      document.getElementById('clientCity').value = '';
+      hideAddClientCard();
+      renderAll();
+    }
+
+    function deleteClient(clientId) {
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+      const hasEvents = events.some(e => e.client === client.name);
+      if (hasEvents) {
+        alert('This client has events. Delete or edit those events first.');
+        return;
+      }
+      if (!confirm('Delete this client?')) return;
+      clients = clients.filter(c => c.id !== clientId);
+      saveData();
+      renderAll();
+    }
+
+    function editClient(clientId) {
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+
+      document.getElementById('editClientId').value = client.id;
+      document.getElementById('editClientName').value = client.name;
+      document.getElementById('editClientMobile').value = client.mobile;
+      document.getElementById('editClientType').value = client.type;
+      document.getElementById('editClientCity').value = client.city || '';
+
+      const card = document.getElementById('editClientCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideEditClientCard() {
+      const card = document.getElementById('editClientCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveClientEdit() {
+      const clientId = Number(document.getElementById('editClientId').value);
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+
+      const oldName = client.name;
+      const name = document.getElementById('editClientName').value.trim();
+      const mobile = document.getElementById('editClientMobile').value.trim();
+      const type = document.getElementById('editClientType').value;
+      const city = document.getElementById('editClientCity').value.trim();
+
+      if (!name || !mobile) {
+        alert('Please add client name and mobile number');
+        return;
+      }
+
+      client.name = name;
+      client.mobile = mobile;
+      client.type = type;
+      client.city = city;
+
+      events.forEach(event => {
+        if (event.client === oldName) event.client = name;
+      });
+
+      leads.forEach(lead => {
+        if (lead.client === oldName) lead.client = name;
+      });
+
+      saveData();
+      hideEditClientCard();
+      showToast(`${name} updated`);
+      renderAll();
+      renderClientDetail(clientId);
+    }
+
+    function openClientDetail(clientId) {
+      showPageById('clientDetail');
+      renderClientDetail(clientId);
+    }
+
+    function renderClientDetail(clientId) {
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+
+      const clientEvents = events.filter(e => e.client === client.name);
+      let totalBill = 0;
+      let totalReceived = 0;
+      let totalCost = 0;
+
+      clientEvents.forEach(event => {
+        const stats = calculateEventStats(event);
+        totalBill += stats.clientBill;
+        totalReceived += event.clientPaid || 0;
+        totalCost += stats.staffCost;
+      });
+
+      const pending = Math.max(totalBill - totalReceived, 0);
+      const profit = totalBill - totalCost;
+
+      const eventCards = clientEvents.map(event => {
+        const stats = calculateEventStats(event);
+        const assignedCount = stats.assignedCount;
+        const bill = stats.clientBill;
+        const cost = stats.staffCost;
+        const eventPending = stats.clientPending;
+        return `
+          <div class="client-event-card">
+            <div class="client-event-head">
+              <div>
+                <strong>${event.name}</strong>
+                <div class="muted">${event.date || 'No date'} • ${event.location || 'No location'}</div>
+              </div>
+              <span class="status ${eventPending > 0 ? 'red' : 'green'}">${eventPending > 0 ? 'Pending' : 'Paid'}</span>
+            </div>
+            <div class="summary-box">
+              <div><span>Staff</span><b>${assignedCount}/${stats.totalRequired}</b></div>
+              <div><span>Bill</span><b>₹${bill}</b></div>
+              <div><span>Pending</span><b>₹${eventPending}</b></div>
+            </div>
+            <div class="summary-box">
+              <div><span>Received</span><b>₹${event.clientPaid || 0}</b></div>
+              <div><span>Cost</span><b>₹${cost}</b></div>
+              <div><span>Profit</span><b>₹${bill - cost}</b></div>
+            </div>
+            <button class="secondary" onclick="markClientPaid(${event.id}); renderClientDetail(${client.id});">Client Payment</button>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No events</strong><div class="muted">This client has no event yet.</div></div>';
+
+      document.getElementById('clientDetailContent').innerHTML = `
+        <h2 class="section-title">${client.name}</h2>
+        <div class="staff-profile-card">
+          <div class="staff-title-row">
+            <strong>${client.name}</strong>
+            <span class="status green">${client.type}</span>
+          </div>
+          <div class="detail-row"><span>Mobile</span><b>${client.mobile}</b></div>
+          <div class="detail-row"><span>Type</span><b>${client.type}</b></div>
+          <div class="detail-row"><span>City</span><b>${client.city || 'Not added'}</b></div>
+          <div class="quick-actions">
+            <button class="quick-action-btn call" onclick="window.location.href='tel:${client.mobile}'"><span class="icon">📞</span><span>Call</span></button>
+            <button class="quick-action-btn whatsapp" onclick="whatsappClient(${client.id})"><span class="icon">💬</span><span>WhatsApp</span></button>
+            <button class="quick-action-btn edit" onclick="editClient(${client.id}); renderClientDetail(${client.id});"><span class="icon">✏️</span><span>Edit Client</span></button>
+            <button class="quick-action-btn advance" onclick="showPageById('events')"><span class="icon">📅</span><span>Add Event</span></button>
+            <button class="quick-action-btn whatsapp" onclick="printClientBill(${client.id})"><span class="icon">🖨️</span><span>Print Bill</span></button>
+          </div>
+        </div>
+
+        <h2 class="section-title">Client Summary</h2>
+        <div class="summary-box">
+          <div><span>Events</span><b>${clientEvents.length}</b></div>
+          <div><span>Bill</span><b>₹${totalBill}</b></div>
+          <div><span>Pending</span><b>₹${pending}</b></div>
+        </div>
+        <div class="summary-box">
+          <div><span>Received</span><b>₹${totalReceived}</b></div>
+          <div><span>Cost</span><b>₹${totalCost}</b></div>
+          <div><span>Profit</span><b>₹${profit}</b></div>
+        </div>
+
+        <h2 class="section-title">Client Events</h2>
+        ${eventCards}
+      `;
+    }
+
+    function whatsappClient(clientId) {
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+      const phone = client.mobile.replace(/[^0-9]/g, '');
+      const message = `Namaste ${client.name}, ManpowerOS se message hai.`;
+      window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function renderClients() {
+      const search = (document.getElementById('clientSearch')?.value || '').toLowerCase();
+      const typeFilter = document.getElementById('clientTypeFilter')?.value || 'All';
+      const paymentFilter = document.getElementById('clientPaymentFilter')?.value || 'All';
+
+      let totalPendingAll = 0;
+      let totalBillAll = 0;
+
+      const enrichedClients = clients.map(client => {
+        const clientEvents = events.filter(e => e.client === client.name);
+        let bill = 0;
+        let received = 0;
+        clientEvents.forEach(event => {
+          const stats = calculateEventStats(event);
+          bill += stats.clientBill;
+          received += event.clientPaid || 0;
+        });
+        const pending = Math.max(bill - received, 0);
+        totalPendingAll += pending;
+        totalBillAll += bill;
+        return { ...client, clientEvents, bill, received, pending };
+      });
+
+      const filteredClients = enrichedClients.filter(client => {
+        const matchesSearch = client.name.toLowerCase().includes(search) ||
+          client.mobile.toLowerCase().includes(search) ||
+          client.type.toLowerCase().includes(search) ||
+          (client.city || '').toLowerCase().includes(search);
+        const matchesType = typeFilter === 'All' || client.type === typeFilter;
+        const matchesPayment = paymentFilter === 'All' ||
+          (paymentFilter === 'Pending' && client.pending > 0) ||
+          (paymentFilter === 'Clear' && client.pending === 0);
+        return matchesSearch && matchesType && matchesPayment;
+      });
+
+      const clientCards = filteredClients.map((client, index) => {
+        const initials = client.name.slice(0, 2).toUpperCase();
+        return `
+          <div class="client-card" onclick="openClientDetail(${client.id})">
+            <div class="client-card-main">
+              <div class="client-avatar">${initials}</div>
+              <div class="client-info">
+                <strong>#${index + 1} ${client.name}</strong>
+                <div class="muted">${client.type} • ${client.city || 'No city'} • ${client.mobile}</div>
+                <div class="client-money-row">
+                  <span class="mini-pill">Events ${client.clientEvents.length}</span>
+                  <span class="mini-pill">Bill ₹${client.bill}</span>
+                  <span class="mini-pill">Pending ₹${client.pending}</span>
+                </div>
+                <span class="status ${client.pending > 0 ? 'red' : 'green'}">${client.pending > 0 ? 'Payment Pending' : 'Clear'}</span>
+              </div>
+            </div>
+            <div class="staff-arrow">›</div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No clients found</strong><div class="muted">Try another search or filter.</div></div>';
+
+      document.getElementById('clientTotalCount').textContent = clients.length;
+      document.getElementById('clientPendingTotal').textContent = '₹' + totalPendingAll;
+      document.getElementById('clientEventTotal').textContent = events.length;
+      document.getElementById('clientBillTotal').textContent = '₹' + totalBillAll;
+      document.getElementById('clientList').innerHTML = clientCards;
+    }
+
+    function openEventDetail(eventId) {
+      showPageById('eventDetail');
+      renderEventDetail(eventId);
+    }
+
+    function getEventRequirements(eventId) {
+      const lines = requirements.filter(r => r.eventId === eventId);
+      if (lines.length) return lines;
+      const event = getEvent(eventId);
+      if (!event) return [];
+      return [{ id: 'legacy-' + event.id, eventId: event.id, staffType: event.staffType, required: event.required, rate: event.rate, clientRate: event.clientRate || event.rate }];
+    }
+
+    function getRequirement(id) {
+      return requirements.find(r => String(r.id) === String(id));
+    }
+
+    function showAddRequirementCard(eventId) {
+      const card = document.getElementById('addRequirementCard');
+      if (!card) return;
+      document.getElementById('requirementEventId').value = eventId;
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function hideAddRequirementCard() {
+      const card = document.getElementById('addRequirementCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function addRequirementLine() {
+      const eventId = Number(document.getElementById('requirementEventId').value);
+      const staffType = document.getElementById('requirementStaffType').value;
+      const required = Number(document.getElementById('requirementQty').value);
+      const rate = Number(document.getElementById('requirementRate').value);
+      const clientRate = Number(document.getElementById('requirementClientRate').value);
+
+      if (!eventId || !required) {
+        alert('Please add required quantity');
+        return;
+      }
+
+      requirements.push({ id: Date.now(), eventId, staffType, required, rate: rate || 0, clientRate: clientRate || rate || 0 });
+      saveData();
+      hideAddRequirementCard();
+      showToast(`${staffType} requirement added`);
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function editRequirementLine(requirementId, eventId) {
+      const req = getRequirement(requirementId);
+      if (!req) return;
+
+      document.getElementById('editRequirementId').value = req.id;
+      document.getElementById('editRequirementEventId').value = eventId;
+      document.getElementById('editRequirementStaffType').value = req.staffType;
+      document.getElementById('editRequirementQty').value = req.required || 0;
+      document.getElementById('editRequirementRate').value = req.rate || 0;
+      document.getElementById('editRequirementClientRate').value = req.clientRate || req.rate || 0;
+
+      const card = document.getElementById('editRequirementCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideEditRequirementCard() {
+      const card = document.getElementById('editRequirementCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveRequirementEdit() {
+      const requirementId = document.getElementById('editRequirementId').value;
+      const eventId = Number(document.getElementById('editRequirementEventId').value);
+      const req = getRequirement(requirementId);
+      if (!req) return;
+
+      const staffType = document.getElementById('editRequirementStaffType').value;
+      const required = Number(document.getElementById('editRequirementQty').value);
+      const rate = Number(document.getElementById('editRequirementRate').value);
+      const clientRate = Number(document.getElementById('editRequirementClientRate').value);
+
+      if (!required || required < 0) {
+        alert('Please add valid required quantity');
+        return;
+      }
+
+      req.staffType = staffType;
+      req.required = required;
+      req.rate = rate || 0;
+      req.clientRate = clientRate || rate || 0;
+
+      saveData();
+      hideEditRequirementCard();
+      showToast(`${staffType} requirement updated`);
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function deleteRequirementLine(requirementId, eventId) {
+      const hasAssignments = assignments.some(a => String(a.requirementId) === String(requirementId));
+      if (hasAssignments) {
+        alert('This requirement has assigned staff. Remove assignments first.');
+        return;
+      }
+      if (!confirm('Delete this requirement line?')) return;
+      requirements = requirements.filter(r => String(r.id) !== String(requirementId));
+      saveData();
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function printStaffPaymentReport() {
+      let totalGross = 0;
+      let totalAdvance = 0;
+      let totalPaid = 0;
+      let totalPending = 0;
+
+      const rows = assignments.map((a, index) => {
+        const event = getEvent(a.eventId);
+        const person = getStaff(a.staffId);
+        if (!event || !person) return '';
+
+        const req = getRequirement(a.requirementId);
+        const grossPay = a.status === 'Present' ? (req?.rate ?? person.rate ?? 0) : 0;
+        const advance = staffAdvances
+          .filter(adv => adv.staffId === person.id)
+          .reduce((sum, adv) => sum + adv.amount, 0);
+        const paid = a.paymentStatus === 'Paid' ? (a.paymentAmount || grossPay) : 0;
+        const pending = a.paymentStatus === 'Paid' ? 0 : Math.max(grossPay - advance, 0);
+
+        totalGross += grossPay;
+        totalAdvance += advance;
+        totalPaid += paid;
+        totalPending += pending;
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${person.name}<br><small>${person.mobile}</small></td>
+            <td>${event.name}<br><small>${event.date || '-'} • ${event.client}</small></td>
+            <td>${req?.staffType || person.type}</td>
+            <td>${a.status}</td>
+            <td>₹${grossPay}</td>
+            <td>₹${advance}</td>
+            <td>₹${paid}</td>
+            <td>₹${pending}</td>
+            <td>${a.paymentMode || '-'}</td>
+            <td>${a.paymentDate || '-'}</td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="11">No payment records found</td></tr>';
+
+      document.getElementById('printArea').innerHTML = `
+        <h1>Staff Payment Report</h1>
+        <div class="print-meta"><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}</div>
+        <div class="print-meta"><strong>Total Records:</strong> ${assignments.length}</div>
+
+        <h2>Payment Summary</h2>
+        <table class="print-table">
+          <tbody>
+            <tr><th>Total Gross Pay</th><td>₹${totalGross}</td></tr>
+            <tr><th>Total Advance</th><td>₹${totalAdvance}</td></tr>
+            <tr><th>Total Paid</th><td>₹${totalPaid}</td></tr>
+            <tr><th>Total Pending</th><td>₹${totalPending}</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Staff Payment Records</h2>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Staff</th>
+              <th>Event</th>
+              <th>Role</th>
+              <th>Attendance</th>
+              <th>Gross</th>
+              <th>Advance</th>
+              <th>Paid</th>
+              <th>Pending</th>
+              <th>Mode</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="print-footer">Generated from ManpowerOS</div>
+      `;
+
+      window.print();
+    }
+
+    function printClientBill(clientId) {
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+
+      const clientEvents = events.filter(e => e.client === client.name);
+      let totalBill = 0;
+      let totalReceived = 0;
+      let totalCost = 0;
+
+      const rows = clientEvents.map((event, index) => {
+        const stats = calculateEventStats(event);
+        totalBill += stats.clientBill;
+        totalReceived += event.clientPaid || 0;
+        totalCost += stats.staffCost;
+
+        const requirementText = getEventRequirements(event.id).map(req => {
+          const assigned = assignments.filter(a => a.eventId === event.id && String(a.requirementId || '') === String(req.id)).length;
+          return `${req.staffType}: ${assigned}/${req.required} @ ₹${req.clientRate || req.rate || 0}`;
+        }).join('<br>');
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${event.name}<br><small>${event.date || '-'} • ${event.location || '-'}</small></td>
+            <td>${requirementText || '-'}</td>
+            <td>₹${stats.clientBill}</td>
+            <td>₹${event.clientPaid || 0}</td>
+            <td>₹${stats.clientPending}</td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="6">No events found</td></tr>';
+
+      const pending = Math.max(totalBill - totalReceived, 0);
+      const profit = totalBill - totalCost;
+
+      document.getElementById('printArea').innerHTML = `
+        <h1>Client Bill</h1>
+        <div class="print-meta"><strong>Client:</strong> ${client.name}</div>
+        <div class="print-meta"><strong>Mobile:</strong> ${client.mobile}</div>
+        <div class="print-meta"><strong>Type:</strong> ${client.type}</div>
+        <div class="print-meta"><strong>City:</strong> ${client.city || '-'}</div>
+
+        <h2>Bill Summary</h2>
+        <table class="print-table">
+          <tbody>
+            <tr><th>Total Bill</th><td>₹${totalBill}</td></tr>
+            <tr><th>Received</th><td>₹${totalReceived}</td></tr>
+            <tr><th>Pending</th><td>₹${pending}</td></tr>
+            <tr><th>Staff Cost</th><td>₹${totalCost}</td></tr>
+            <tr><th>Profit</th><td>₹${profit}</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Event Wise Bill</h2>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Event</th>
+              <th>Requirement / Rate</th>
+              <th>Bill</th>
+              <th>Received</th>
+              <th>Pending</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="print-footer">Generated from ManpowerOS</div>
+      `;
+
+      window.print();
+    }
+
+    function printEventDutyList(eventId) {
+      const event = getEvent(eventId);
+      if (!event) return;
+
+      const eventReqs = getEventRequirements(event.id);
+      const eventAssignments = assignments.filter(a => a.eventId === event.id);
+      const stats = calculateEventStats(event);
+
+      const groupsHtml = eventReqs.map(req => {
+        const reqAssignments = eventAssignments.filter(a => String(a.requirementId || '') === String(req.id));
+        const rows = reqAssignments.map((a, index) => {
+          const person = getStaff(a.staffId);
+          if (!person) return '';
+          return `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${person.name}${event.leaderId === person.id ? ' ⭐ Leader' : ''}</td>
+              <td>${person.mobile}</td>
+              <td>${person.type}</td>
+              <td>${a.status}</td>
+            </tr>
+          `;
+        }).join('') || `
+          <tr>
+            <td colspan="5">No staff assigned yet</td>
+          </tr>
+        `;
+
+        return `
+          <h2>${req.staffType} - Required ${req.required}, Assigned ${reqAssignments.length}, Pending ${Math.max((req.required || 0) - reqAssignments.length, 0)}</h2>
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Staff Name</th>
+                <th>Mobile</th>
+                <th>Role</th>
+                <th>Attendance</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      }).join('');
+
+      document.getElementById('printArea').innerHTML = `
+        <h1>Event Duty List</h1>
+        <div class="print-meta"><strong>Event:</strong> ${event.name}</div>
+        <div class="print-meta"><strong>Client:</strong> ${event.client}</div>
+        <div class="print-meta"><strong>Date:</strong> ${event.date || '-'}</div>
+        <div class="print-meta"><strong>Time:</strong> ${event.time || '-'}</div>
+        <div class="print-meta"><strong>Location:</strong> ${event.location || '-'}</div>
+        <div class="print-meta"><strong>Total Required:</strong> ${stats.totalRequired} | <strong>Assigned:</strong> ${stats.assignedCount} | <strong>Pending:</strong> ${stats.pendingCount}</div>
+        <div class="print-meta"><strong>Leader:</strong> ${getStaff(event.leaderId)?.name || '-'}</div>
+        ${groupsHtml}
+        <div class="print-footer">Generated from ManpowerOS</div>
+      `;
+
+      window.print();
+    }
+
+    function showEventLeaderCard(eventId) {
+      const event = getEvent(eventId);
+      if (!event) return;
+
+      const eventAssignments = assignments.filter(a => a.eventId === eventId);
+      const assignedStaff = eventAssignments.map(a => getStaff(a.staffId)).filter(Boolean);
+      const leaderOptions = assignedStaff.length ? assignedStaff : staff.filter(s => s.status !== 'Blacklisted' && s.status !== 'Inactive');
+
+      document.getElementById('leaderEventId').value = eventId;
+      document.getElementById('leaderEventSummary').innerHTML = `
+        <div class="list-item">
+          <strong>${event.name}</strong>
+          <div class="muted">${event.client} • ${event.date || 'No date'} • ${event.location || 'No location'}</div>
+        </div>
+      `;
+      document.getElementById('leaderStaffSelect').innerHTML = '<option value="">No Leader</option>' + leaderOptions.map(person => `
+        <option value="${person.id}" ${event.leaderId === person.id ? 'selected' : ''}>${person.name} - ${person.type}</option>
+      `).join('');
+
+      const card = document.getElementById('eventLeaderCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideEventLeaderCard() {
+      const card = document.getElementById('eventLeaderCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveEventLeader() {
+      const eventId = Number(document.getElementById('leaderEventId').value);
+      const event = getEvent(eventId);
+      if (!event) return;
+
+      const leaderId = Number(document.getElementById('leaderStaffSelect').value);
+      event.leaderId = leaderId || null;
+
+      const leader = getStaff(leaderId);
+      if (leader) leader.isLeader = true;
+
+      saveData();
+      hideEventLeaderCard();
+      showToast(leader ? `${leader.name} set as leader` : 'Leader removed');
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function renderEventDetail(eventId) {
+      const event = getEvent(eventId);
+      if (!event) return;
+
+      const eventAssignments = assignments.filter(a => a.eventId === event.id);
+      const eventLeader = getStaff(event.leaderId);
+      const eventReqs = getEventRequirements(event.id);
+      const totalRequired = eventReqs.reduce((sum, r) => sum + Number(r.required || 0), 0);
+      const assignedCount = eventAssignments.length;
+      const presentCount = eventAssignments.filter(a => a.status === 'Present').length;
+      const absentCount = eventAssignments.filter(a => a.status === 'Absent').length;
+      const pendingCount = Math.max(totalRequired - assignedCount, 0);
+      const staffCost = eventAssignments.reduce((sum, a) => {
+        const req = getRequirement(a.requirementId);
+        const person = getStaff(a.staffId);
+        return sum + (req?.rate ?? person?.rate ?? event.rate ?? 0);
+      }, 0);
+      const clientBill = eventAssignments.reduce((sum, a) => {
+        const req = getRequirement(a.requirementId);
+        return sum + (req?.clientRate ?? event.clientRate ?? event.rate ?? 0);
+      }, 0);
+      const clientPending = Math.max(clientBill - (event.clientPaid || 0), 0);
+      const profit = clientBill - staffCost;
+      const fillPercent = totalRequired ? Math.min((assignedCount / totalRequired) * 100, 100) : 0;
+
+      const assignedStaffCards = eventAssignments.map(a => {
+        const person = getStaff(a.staffId);
+        if (!person) return '';
+        const attendanceClass = a.status === 'Present' ? 'green' : (a.status === 'Absent' ? 'red' : '');
+        const paymentClass = a.paymentStatus === 'Paid' ? 'green' : 'red';
+        return `
+          <div class="duty-card">
+            <div class="duty-card-header">
+              <div>
+                <strong>${person.name} ${event.leaderId === person.id ? '⭐' : ''}</strong>
+                <div class="muted">${person.type} • ${person.mobile}${event.leaderId === person.id ? ' • Leader' : ''}</div>
+              </div>
+              <div>
+                <span class="status ${attendanceClass}">${a.status}</span>
+                <span class="status ${paymentClass}">${a.paymentStatus}</span>
+              </div>
+            </div>
+            <div class="duty-meta-grid">
+              <div class="duty-meta-item"><span>Rate</span><b>₹${getRequirement(a.requirementId)?.rate ?? person.rate}</b></div>
+              <div class="duty-meta-item"><span>Role</span><b>${person.type}</b></div>
+              <div class="duty-meta-item"><span>Attendance</span><b>${a.status}</b></div>
+              <div class="duty-meta-item"><span>Payment</span><b>${a.paymentStatus}</b></div>
+            </div>
+            <div class="duty-action-row">
+              <button class="secondary" onclick="sendWhatsAppDuty(${a.id})">💬 Duty Msg</button>
+              <button class="success" onclick="markAttendance(${a.id}, 'Present'); renderEventDetail(${event.id});">✓ Present</button>
+              <button onclick="markAttendance(${a.id}, 'Absent'); renderEventDetail(${event.id});">✕ Absent</button>
+              <button class="secondary" onclick="markPaid(${a.id}); renderEventDetail(${event.id});">₹ Paid</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No staff assigned</strong><div class="muted">Assign staff from Assign page.</div></div>';
+
+      document.getElementById('eventDetailContent').innerHTML = `
+        <h2 class="section-title">${event.name}</h2>
+        <div class="staff-profile-card">
+          <div class="staff-title-row">
+            <strong>${event.name}</strong>
+            <span class="status ${pendingCount > 0 ? 'red' : 'green'}">${pendingCount > 0 ? 'Staff Pending' : 'Ready'}</span>
+          </div>
+          <div class="detail-row"><span>Client</span><b>${event.client}</b></div>
+          <div class="detail-row"><span>Date</span><b>${event.date || 'No date'}</b></div>
+          <div class="detail-row"><span>Time</span><b>${event.time || 'No time'}</b></div>
+          <div class="detail-row"><span>Location</span><b>${event.location || 'No location'}</b></div>
+          <div class="detail-row"><span>Total Required</span><b>${totalRequired} Staff</b></div>
+          <div class="detail-row"><span>Leader</span><b>${eventLeader ? eventLeader.name : 'Not assigned'}</b></div>
+          <div class="progress-track"><div class="progress-fill" style="width:${fillPercent}%"></div></div>
+          <div class="quick-actions">
+            <button class="quick-action-btn advance" onclick="showAddRequirementCard(${event.id})"><span class="icon">➕</span><span>Add Req.</span></button>
+            <button class="quick-action-btn advance" onclick="showPageById('assign')"><span class="icon">✅</span><span>Assign Staff</span></button>
+            <button class="quick-action-btn edit" onclick="showEventLeaderCard(${event.id})"><span class="icon">⭐</span><span>Leader</span></button>
+            <button class="quick-action-btn call" onclick="markClientPaid(${event.id}); renderEventDetail(${event.id});"><span class="icon">₹</span><span>Client Pay</span></button>
+            <button class="quick-action-btn whatsapp" onclick="printEventDutyList(${event.id})"><span class="icon">🖨️</span><span>Print Duty</span></button>
+            <button class="quick-action-btn edit" onclick="editEvent(${event.id}); renderEventDetail(${event.id});"><span class="icon">✏️</span><span>Edit Event</span></button>
+            <button class="quick-action-btn whatsapp" onclick="deleteEvent(${event.id}); showPageById('events');"><span class="icon">🗑️</span><span>Delete</span></button>
+          </div>
+        </div>
+
+        <h2 class="section-title">Requirement Lines</h2>
+        ${eventReqs.map(req => {
+          const reqAssigned = eventAssignments.filter(a => String(a.requirementId || '') === String(req.id)).length;
+          const reqPending = Math.max((req.required || 0) - reqAssigned, 0);
+          const reqCost = reqAssigned * (req.rate || 0);
+          const reqBill = reqAssigned * (req.clientRate || req.rate || 0);
+          return `
+            <div class="list-item">
+              <div class="staff-title-row">
+                <strong>${req.staffType}</strong>
+                <span class="status ${reqPending > 0 ? 'red' : 'green'}">${reqPending > 0 ? reqPending + ' Pending' : 'Ready'}</span>
+              </div>
+              <div class="summary-box">
+                <div><span>Required</span><b>${req.required}</b></div>
+                <div><span>Assigned</span><b>${reqAssigned}</b></div>
+                <div><span>Pending</span><b>${reqPending}</b></div>
+              </div>
+              <div class="summary-box">
+                <div><span>Staff Rate</span><b>₹${req.rate || 0}</b></div>
+                <div><span>Client Rate</span><b>₹${req.clientRate || 0}</b></div>
+                <div><span>Profit</span><b>₹${reqBill - reqCost}</b></div>
+              </div>
+              <div class="event-action-row">
+                <button class="secondary" onclick="editRequirementLine(${req.id}, ${event.id})">Edit</button>
+                <button onclick="deleteRequirementLine(${req.id}, ${event.id})">Delete</button>
+                <button class="secondary" onclick="showPageById('assign')">Assign</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+
+        <h2 class="section-title">Event Summary</h2>
+        <div class="summary-box">
+          <div><span>Required</span><b>${totalRequired}</b></div>
+          <div><span>Assigned</span><b>${assignedCount}</b></div>
+          <div><span>Pending</span><b>${pendingCount}</b></div>
+        </div>
+        <div class="summary-box">
+          <div><span>Present</span><b>${presentCount}</b></div>
+          <div><span>Absent</span><b>${absentCount}</b></div>
+          <div><span>Rate</span><b>₹${event.rate}</b></div>
+        </div>
+
+        <h2 class="section-title">Billing</h2>
+        <div class="summary-box">
+          <div><span>Bill</span><b>₹${clientBill}</b></div>
+          <div><span>Received</span><b>₹${event.clientPaid || 0}</b></div>
+          <div><span>Pending</span><b>₹${clientPending}</b></div>
+        </div>
+        <div class="summary-box">
+          <div><span>Cost</span><b>₹${staffCost}</b></div>
+          <div><span>Profit</span><b>₹${profit}</b></div>
+          <div><span>Client Rate</span><b>₹${event.clientRate || event.rate}</b></div>
+        </div>
+
+        <h2 class="section-title">Assigned Staff</h2>
+        ${assignedStaffCards}
+      `;
+    }
+
+    function renderEditEventClientDropdown(selectedClient) {
+      const select = document.getElementById('editEventClient');
+      if (!select) return;
+      select.innerHTML = clients.map(client => `
+        <option value="${client.name}" ${client.name === selectedClient ? 'selected' : ''}>${client.name} - ${client.type}</option>
+      `).join('') || `<option value="${selectedClient || ''}">${selectedClient || 'Add client first'}</option>`;
+    }
+
+    function editEvent(eventId) {
+      const event = events.find(e => e.id === eventId);
+      if (!event) return;
+
+      renderEditEventClientDropdown(event.client);
+      document.getElementById('editEventId').value = event.id;
+      document.getElementById('editEventClient').value = event.client;
+      document.getElementById('editEventName').value = event.name;
+      document.getElementById('editEventDate').value = event.date || '';
+      document.getElementById('editEventTime').value = event.time || '';
+      document.getElementById('editEventLocation').value = event.location || '';
+      document.getElementById('editEventStaffType').value = event.staffType || 'Waiter';
+      document.getElementById('editEventQty').value = event.required || 0;
+      document.getElementById('editEventRate').value = event.rate || 0;
+      document.getElementById('editEventClientRate').value = event.clientRate || event.rate || 0;
+
+      const card = document.getElementById('editEventCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideEditEventCard() {
+      const card = document.getElementById('editEventCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveEventEdit() {
+      const eventId = Number(document.getElementById('editEventId').value);
+      const event = events.find(e => e.id === eventId);
+      if (!event) return;
+
+      const client = document.getElementById('editEventClient').value;
+      const name = document.getElementById('editEventName').value.trim();
+      const date = document.getElementById('editEventDate').value;
+      const time = document.getElementById('editEventTime').value.trim();
+      const location = document.getElementById('editEventLocation').value.trim();
+      const staffType = document.getElementById('editEventStaffType').value;
+      const required = Number(document.getElementById('editEventQty').value);
+      const rate = Number(document.getElementById('editEventRate').value);
+      const clientRate = Number(document.getElementById('editEventClientRate').value);
+
+      if (!client || !name || !required) {
+        alert('Please select client, add event name and required quantity');
+        return;
+      }
+
+      event.client = client;
+      event.name = name;
+      event.date = date;
+      event.time = time;
+      event.location = location;
+      event.staffType = staffType;
+      event.required = required;
+      event.rate = rate || 0;
+      event.clientRate = clientRate || rate || 0;
+
+      const firstReq = requirements.find(r => r.eventId === event.id);
+      if (firstReq) {
+        firstReq.staffType = firstReq.staffType || staffType;
+        if (!firstReq.required) firstReq.required = required;
+        if (!firstReq.rate) firstReq.rate = rate || 0;
+        if (!firstReq.clientRate) firstReq.clientRate = clientRate || rate || 0;
+      }
+
+      saveData();
+      hideEditEventCard();
+      showToast(`${name} updated`);
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function markClientPaid(eventId) {
+      const event = events.find(e => e.id === eventId);
+      if (!event) return;
+
+      const stats = calculateEventStats(event);
+      document.getElementById('clientPaymentEventId').value = eventId;
+      document.getElementById('clientPaymentAmount').value = event.clientPaid || stats.clientBill;
+      document.getElementById('clientPaymentMode').value = event.clientPaymentMode || 'Cash';
+      document.getElementById('clientPaymentNote').value = event.clientPaymentNote || '';
+      document.getElementById('clientPaymentSummary').innerHTML = `
+        <div class="list-item">
+          <strong>${event.name}</strong>
+          <div class="muted">${event.client} • ${event.date || 'No date'}</div>
+          <div class="summary-box">
+            <div><span>Bill</span><b>₹${stats.clientBill}</b></div>
+            <div><span>Received</span><b>₹${event.clientPaid || 0}</b></div>
+            <div><span>Pending</span><b>₹${stats.clientPending}</b></div>
+          </div>
+        </div>
+      `;
+
+      const card = document.getElementById('clientPaymentCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideClientPaymentCard() {
+      const card = document.getElementById('clientPaymentCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveClientPayment() {
+      const eventId = Number(document.getElementById('clientPaymentEventId').value);
+      const event = events.find(e => e.id === eventId);
+      if (!event) return;
+
+      const amount = Number(document.getElementById('clientPaymentAmount').value);
+      const mode = document.getElementById('clientPaymentMode').value;
+      const note = document.getElementById('clientPaymentNote').value;
+
+      if (amount < 0 || Number.isNaN(amount)) {
+        alert('Please enter valid amount');
+        return;
+      }
+
+      event.clientPaid = amount;
+      event.clientPaymentMode = mode;
+      event.clientPaymentNote = note;
+      event.clientPaymentDate = new Date().toISOString().slice(0, 10);
+
+      saveData();
+      hideClientPaymentCard();
+      showToast('Client payment saved');
+      renderAll();
+      renderEventDetail(eventId);
+    }
+
+    function deleteEvent(eventId) {
+      if (!confirm('Delete this event? This will also remove its assignments.')) return;
+      events = events.filter(e => e.id !== eventId);
+      assignments = assignments.filter(a => a.eventId !== eventId);
+      requirements = requirements.filter(r => r.eventId !== eventId);
+      saveData();
+      renderAll();
+    }
+
+    function renderClientDropdown() {
+      const select = document.getElementById('eventClient');
+      if (!select) return;
+      select.innerHTML = clients.map(client => `
+        <option value="${client.name}">${client.name} - ${client.type}</option>
+      `).join('') || '<option value="">Add client first</option>';
+    }
+
+    function addEvent() {
+      renderClientDropdown();
+      const client = document.getElementById('eventClient').value;
+      const name = document.getElementById('eventName').value;
+      const date = document.getElementById('eventDate').value;
+      const time = document.getElementById('eventTime').value;
+      const location = document.getElementById('eventLocation').value;
+      const staffType = document.getElementById('eventStaffType').value;
+      const required = Number(document.getElementById('eventQty').value);
+      const rate = Number(document.getElementById('eventRate').value);
+      const clientRate = Number(document.getElementById('eventClientRate').value);
+
+      if (!client || !name || !required) {
+        alert('Please select client, add event name and required quantity');
+        return;
+      }
+
+      const eventId = Date.now();
+      events.push({ id: eventId, client, name, date, time, location, staffType, required, rate: rate || 0, clientRate: clientRate || rate || 0, clientPaid: 0 });
+      requirements.push({ id: Date.now() + 1, eventId, staffType, required, rate: rate || 0, clientRate: clientRate || rate || 0 });
+      saveData();
+      showToast(`${name} event added`);
+      document.getElementById('eventName').value = '';
+      document.getElementById('eventDate').value = '';
+      document.getElementById('eventTime').value = '';
+      document.getElementById('eventLocation').value = '';
+      document.getElementById('eventQty').value = '';
+      document.getElementById('eventRate').value = '';
+      document.getElementById('eventClientRate').value = '';
+      hideAddEventCard();
+      renderAll();
+    }
+
+    function addStaffAdvance(staffId) {
+      const person = getStaff(staffId);
+      if (!person) return;
+
+      const totalAdvance = staffAdvances
+        .filter(a => a.staffId === person.id)
+        .reduce((sum, a) => sum + a.amount, 0);
+
+      document.getElementById('advanceStaffId').value = staffId;
+      document.getElementById('advanceAmount').value = '';
+      document.getElementById('advanceMode').value = 'Cash';
+      document.getElementById('advanceNote').value = 'Advance given';
+      document.getElementById('advanceStaffSummary').innerHTML = `
+        <div class="list-item">
+          <strong>${person.name}</strong>
+          <div class="muted">${person.mobile} • ${person.type}</div>
+          <div class="summary-box">
+            <div><span>Rate</span><b>₹${person.rate}</b></div>
+            <div><span>Old Advance</span><b>₹${totalAdvance}</b></div>
+            <div><span>Status</span><b>${person.status}</b></div>
+          </div>
+        </div>
+      `;
+
+      const card = document.getElementById('staffAdvanceCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideStaffAdvanceCard() {
+      const card = document.getElementById('staffAdvanceCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveStaffAdvance() {
+      const staffId = Number(document.getElementById('advanceStaffId').value);
+      const person = getStaff(staffId);
+      if (!person) return;
+
+      const amount = Number(document.getElementById('advanceAmount').value);
+      const mode = document.getElementById('advanceMode').value;
+      const note = document.getElementById('advanceNote').value || 'Advance given';
+
+      if (!amount || amount <= 0) {
+        alert('Please enter valid advance amount');
+        return;
+      }
+
+      const date = new Date().toISOString().slice(0, 10);
+      staffAdvances.push({ id: Date.now(), staffId, amount, mode, note, date });
+      saveData();
+      hideStaffAdvanceCard();
+      renderAll();
+      renderStaffDetail(staffId);
+      showToast(`₹${amount} advance added for ${person.name}`);
+    }
+
+    function deleteStaffAdvance(advanceId, staffId) {
+      if (!confirm('Delete this advance entry?')) return;
+      staffAdvances = staffAdvances.filter(a => a.id !== advanceId);
+      saveData();
+      renderAll();
+      renderStaffDetail(staffId);
+    }
+
+    function editStaff(staffId) {
+      const person = staff.find(s => s.id === staffId);
+      if (!person) return;
+
+      document.getElementById('editStaffId').value = person.id;
+      document.getElementById('editStaffName').value = person.name;
+      document.getElementById('editStaffMobile').value = person.mobile;
+      document.getElementById('editStaffType').value = person.type;
+      document.getElementById('editStaffRate').value = person.rate || 0;
+      document.getElementById('editStaffStatus').value = person.status;
+      document.getElementById('editStaffIsLeader').value = person.isLeader ? 'true' : 'false';
+
+      const card = document.getElementById('editStaffCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideEditStaffCard() {
+      const card = document.getElementById('editStaffCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveStaffEdit() {
+      const staffId = Number(document.getElementById('editStaffId').value);
+      const person = staff.find(s => s.id === staffId);
+      if (!person) return;
+
+      const name = document.getElementById('editStaffName').value.trim();
+      const mobile = document.getElementById('editStaffMobile').value.trim();
+      const type = document.getElementById('editStaffType').value;
+      const rate = Number(document.getElementById('editStaffRate').value);
+      const status = document.getElementById('editStaffStatus').value;
+      const isLeader = document.getElementById('editStaffIsLeader').value === 'true';
+
+      if (!name || !mobile) {
+        alert('Please add staff name and mobile');
+        return;
+      }
+
+      person.name = name;
+      person.mobile = mobile;
+      person.type = type;
+      person.rate = rate || 0;
+      person.status = status;
+      person.isLeader = isLeader;
+
+      saveData();
+      hideEditStaffCard();
+      showToast(`${name} updated`);
+      renderAll();
+      renderStaffDetail(staffId);
+    }
+
+    function openStaffDetail(staffId) {
+      showPageById('staffDetail');
+      renderStaffDetail(staffId);
+    }
+
+    function renderStaffDetail(staffId) {
+      const person = getStaff(staffId);
+      if (!person) return;
+
+      const personAssignments = assignments.filter(a => a.staffId === person.id);
+      const presentDuties = personAssignments.filter(a => a.status === 'Present').length;
+      const absentDuties = personAssignments.filter(a => a.status === 'Absent').length;
+      const assignedDuties = personAssignments.filter(a => a.status === 'Assigned').length;
+      const totalEarning = personAssignments
+        .filter(a => a.status === 'Present')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          return sum + (req?.rate ?? person.rate ?? 0);
+        }, 0);
+      const paidAmount = personAssignments
+        .filter(a => a.paymentStatus === 'Paid')
+        .reduce((sum, a) => sum + (a.paymentAmount || getRequirement(a.requirementId)?.rate || person.rate || 0), 0);
+      const totalAdvance = staffAdvances
+        .filter(a => a.staffId === person.id)
+        .reduce((sum, a) => sum + a.amount, 0);
+      const pendingAmount = Math.max(totalEarning - paidAmount - totalAdvance, 0);
+      const advanceBalance = Math.max(totalAdvance - (totalEarning - paidAmount), 0);
+      const statusClass = person.status === 'Available' ? 'green' : (person.status === 'Inactive' || person.status === 'Blacklisted' ? 'red' : '');
+
+      const advanceHistory = staffAdvances
+        .filter(a => a.staffId === person.id)
+        .map(a => `
+          <div class="list-item">
+            <strong>₹${a.amount}</strong>
+            <div class="muted">${a.date} • ${a.mode || 'Cash'} • ${a.note}</div>
+            <button onclick="deleteStaffAdvance(${a.id}, ${person.id})">Delete Advance</button>
+          </div>
+        `).join('') || '<div class="list-item"><strong>No advance given</strong><div class="muted">Advance entries will show here.</div></div>';
+
+      const dutyHistory = personAssignments.map(a => {
+        const event = getEvent(a.eventId);
+        if (!event) return '';
+
+        const attendanceClass = a.status === 'Present' ? 'green' : (a.status === 'Absent' ? 'red' : '');
+        const paymentClass = a.paymentStatus === 'Paid' ? 'green' : 'red';
+
+        return `
+          <div class="duty-card">
+            <div class="duty-card-header">
+              <div>
+                <strong>${event.name}</strong>
+                <div class="muted">${event.client}</div>
+              </div>
+              <div>
+                <span class="status ${attendanceClass}">${a.status}</span>
+                <span class="status ${paymentClass}">${a.paymentStatus}</span>
+              </div>
+            </div>
+
+            <div class="duty-meta-grid">
+              <div class="duty-meta-item"><span>Date</span><b>${event.date || 'No date'}</b></div>
+              <div class="duty-meta-item"><span>Time</span><b>${event.time || 'No time'}</b></div>
+              <div class="duty-meta-item"><span>Location</span><b>${event.location || 'No location'}</b></div>
+              <div class="duty-meta-item"><span>Rate</span><b>₹${getRequirement(a.requirementId)?.rate ?? person.rate}</b></div>
+            </div>
+
+            <div class="duty-action-row">
+              <button class="secondary" onclick="sendWhatsAppDuty(${a.id})">💬 Duty Msg</button>
+              <button class="success" onclick="markAttendance(${a.id}, 'Present'); renderStaffDetail(${person.id});">✓ Present</button>
+              <button onclick="markAttendance(${a.id}, 'Absent'); renderStaffDetail(${person.id});">✕ Absent</button>
+              <button class="secondary" onclick="markPaid(${a.id}); renderStaffDetail(${person.id});">₹ Paid</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No duty history</strong><div class="muted">This staff has not been assigned yet.</div></div>';
+
+      document.getElementById('staffDetailContent').innerHTML = `
+        <h2 class="section-title">${person.name}</h2>
+        <div class="staff-profile-card">
+          <div class="staff-title-row">
+            <strong>${person.name}</strong>
+            <span class="status ${statusClass}">${person.status}</span>
+                ${person.isLeader ? '<span class="leader-badge">⭐ Leader</span>' : ''}
+          </div>
+          <div class="detail-row"><span>Mobile</span><b>${person.mobile}</b></div>
+          <div class="detail-row"><span>Staff Type</span><b>${person.type}</b></div>
+          <div class="detail-row"><span>Daily Rate</span><b>₹${person.rate}</b></div>
+          <div class="detail-row"><span>Status</span><b>${person.status}</b></div>
+          <div class="detail-row"><span>Leader</span><b>${person.isLeader ? 'Can be Leader' : 'Normal Staff'}</b></div>
+          <div class="detail-row"><span>Total Advance</span><b>₹${totalAdvance}</b></div>
+          <div class="quick-actions">
+            <button class="quick-action-btn advance" onclick="addStaffAdvance(${person.id})">
+              <span class="icon">💰</span>
+              <span>Add Advance</span>
+            </button>
+            <button class="quick-action-btn call" onclick="callStaff(${person.id})">
+              <span class="icon">📞</span>
+              <span>Call</span>
+            </button>
+            <button class="quick-action-btn whatsapp" onclick="whatsappStaff(${person.id})">
+              <span class="icon">💬</span>
+              <span>WhatsApp</span>
+            </button>
+            <button class="quick-action-btn edit" onclick="editStaff(${person.id}); renderStaffDetail(${person.id});">
+              <span class="icon">✏️</span>
+              <span>Edit Staff</span>
+            </button>
+          </div>
+        </div>
+
+        <h2 class="section-title">Work Summary</h2>
+        <div class="summary-box">
+          <div><span>Total Duties</span><b>${personAssignments.length}</b></div>
+          <div><span>Present</span><b>${presentDuties}</b></div>
+          <div><span>Absent</span><b>${absentDuties}</b></div>
+        </div>
+        <div class="summary-box">
+          <div><span>Assigned</span><b>${assignedDuties}</b></div>
+          <div><span>Paid</span><b>₹${paidAmount}</b></div>
+          <div><span>Pending</span><b>₹${pendingAmount}</b></div>
+        </div>
+        <div class="summary-box">
+          <div><span>Earned</span><b>₹${totalEarning}</b></div>
+          <div><span>Advance</span><b>₹${totalAdvance}</b></div>
+          <div><span>Adv. Bal.</span><b>₹${advanceBalance}</b></div>
+        </div>
+
+        <h2 class="section-title">Advance History</h2>
+        ${advanceHistory}
+
+        <h2 class="section-title">Duty History</h2>
+        ${dutyHistory}
+      `;
+    }
+
+    function deleteStaff(staffId) {
+      const isAssigned = assignments.some(a => a.staffId === staffId);
+      if (isAssigned) {
+        alert('This staff is assigned to an event. Remove assignment first.');
+        return;
+      }
+      if (!confirm('Delete this staff member?')) return;
+      staff = staff.filter(s => s.id !== staffId);
+      saveData();
+      renderAll();
+    }
+
+    function addStaff() {
+      const name = document.getElementById('staffName').value;
+      const mobile = document.getElementById('staffMobile').value;
+      const type = document.getElementById('staffType').value;
+      const rate = Number(document.getElementById('staffRate').value);
+      const status = document.getElementById('staffStatus').value;
+
+      if (!name || !mobile) {
+        alert('Please add staff name and mobile');
+        return;
+      }
+
+      staff.push({ id: Date.now(), name, mobile, type, rate: rate || 0, status, isLeader: false });
+      saveData();
+      showToast(`${name} added to staff`);
+      document.getElementById('staffName').value = '';
+      document.getElementById('staffMobile').value = '';
+      document.getElementById('staffRate').value = '';
+      document.getElementById('staffStatus').value = 'Available';
+      hideAddStaffCard();
+      renderAll();
+    }
+
+    function callStaff(staffId) {
+      const person = getStaff(staffId);
+      if (!person) return;
+      window.location.href = `tel:${person.mobile}`;
+    }
+
+    function whatsappStaff(staffId) {
+      const person = getStaff(staffId);
+      if (!person) return;
+      const phone = person.mobile.replace(/[^0-9]/g, '');
+      const message = `Namaste ${person.name}, ManpowerOS se message hai.`;
+      window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function sendWhatsAppDuty(assignmentId) {
+      const assignment = assignments.find(a => a.id === assignmentId);
+      if (!assignment) return;
+
+      const event = getEvent(assignment.eventId);
+      const person = getStaff(assignment.staffId);
+      if (!event || !person) return;
+
+      const message = `Namaste ${person.name},
+
+Aapki duty confirm hai.
+
+Event: ${event.name}
+Client: ${event.client}
+Date: ${event.date}
+Time: ${event.time}
+Location: ${event.location}
+Role: ${person.type}
+Rate: ₹${getRequirement(assignment.requirementId)?.rate ?? person.rate}
+
+Please time par pahunchna.
+- ManpowerOS`;
+
+      const phone = person.mobile.replace(/[^0-9]/g, '');
+      const whatsappUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    function deleteAssignment(assignmentId) {
+      if (!confirm('Remove this staff assignment?')) return;
+      assignments = assignments.filter(a => a.id !== assignmentId);
+      saveData();
+      renderAll();
+    }
+
+    function assignStaffToEvent() {
+      const eventId = Number(document.getElementById('assignEvent').value);
+      const staffId = Number(document.getElementById('assignStaff').value);
+      const requirementId = document.getElementById('assignRequirement')?.value;
+      const event = getEvent(eventId);
+      const person = getStaff(staffId);
+
+      if (!event || !person) {
+        alert('Please select event and staff');
+        return;
+      }
+
+      const req = getRequirement(requirementId);
+      const neededType = req?.staffType || event.staffType;
+      if (person.type.toLowerCase() !== neededType.toLowerCase()) {
+        const allow = confirm(`${person.name} is ${person.type}, but this requirement needs ${neededType}. Assign anyway?`);
+        if (!allow) return;
+      }
+
+      const alreadyAssigned = assignments.some(a => a.eventId === eventId && a.staffId === staffId && String(a.requirementId || '') === String(requirementId || '')); 
+      if (alreadyAssigned) {
+        alert('This staff is already assigned to this requirement');
+        return;
+      }
+
+      const sameDateAssignment = assignments.find(a => {
+        const assignedEvent = getEvent(a.eventId);
+        return a.staffId === staffId && assignedEvent && assignedEvent.date === event.date && a.eventId !== eventId;
+      });
+
+      if (sameDateAssignment) {
+        const assignedEvent = getEvent(sameDateAssignment.eventId);
+        alert(`${person.name} is already assigned on ${event.date} for ${assignedEvent.name}.`);
+        return;
+      }
+
+      if (person.status.toLowerCase() === 'inactive' || person.status.toLowerCase() === 'blacklisted') {
+        alert(`${person.name} is ${person.status}. You cannot assign this staff.`);
+        return;
+      }
+
+      if (person.status.toLowerCase() === 'busy') {
+        const allowBusy = confirm(`${person.name} is marked Busy. Assign anyway?`);
+        if (!allowBusy) return;
+      }
+
+      assignments.push({ id: Date.now(), eventId, staffId, requirementId, status: 'Assigned', paymentStatus: 'Pending' });
+      saveData();
+      showToast(`${person.name} assigned to ${event.name}`);
+      renderAll();
+    }
+
+    function markAttendance(assignmentId, status) {
+      const assignment = assignments.find(a => a.id === assignmentId);
+      assignment.status = status;
+      saveData();
+      renderAll();
+    }
+
+    function markPaid(assignmentId) {
+      const assignment = assignments.find(a => a.id === assignmentId);
+      if (!assignment) return;
+      if (assignment.status !== 'Present') {
+        alert('Mark staff present before payment.');
+        return;
+      }
+
+      const event = getEvent(assignment.eventId);
+      const person = getStaff(assignment.staffId);
+      if (!event || !person) return;
+
+      const req = getRequirement(assignment.requirementId);
+      const grossPay = req?.rate ?? person.rate ?? 0;
+      const totalAdvance = staffAdvances
+        .filter(adv => adv.staffId === person.id)
+        .reduce((sum, adv) => sum + adv.amount, 0);
+      const previousPaid = assignment.paymentAmount || 0;
+      const suggestedPay = Math.max(grossPay - totalAdvance, 0);
+
+      document.getElementById('staffPaymentAssignmentId').value = assignmentId;
+      document.getElementById('staffPaymentAmount').value = previousPaid || suggestedPay;
+      document.getElementById('staffPaymentMode').value = assignment.paymentMode || 'Cash';
+      document.getElementById('staffPaymentNote').value = assignment.paymentNote || 'Staff payment';
+      document.getElementById('staffPaymentSummary').innerHTML = `
+        <div class="list-item">
+          <strong>${person.name}</strong>
+          <div class="muted">${event.name} • ${event.date || 'No date'} • ${person.type}</div>
+          <div class="summary-box">
+            <div><span>Gross</span><b>₹${grossPay}</b></div>
+            <div><span>Advance</span><b>₹${totalAdvance}</b></div>
+            <div><span>Suggested</span><b>₹${suggestedPay}</b></div>
+          </div>
+        </div>
+      `;
+
+      const card = document.getElementById('staffPaymentCard');
+      if (card) {
+        card.classList.remove('hidden');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function hideStaffPaymentCard() {
+      const card = document.getElementById('staffPaymentCard');
+      if (card) card.classList.add('hidden');
+    }
+
+    function saveStaffPayment() {
+      const assignmentId = Number(document.getElementById('staffPaymentAssignmentId').value);
+      const assignment = assignments.find(a => a.id === assignmentId);
+      if (!assignment) return;
+
+      const amount = Number(document.getElementById('staffPaymentAmount').value);
+      const mode = document.getElementById('staffPaymentMode').value;
+      const note = document.getElementById('staffPaymentNote').value || 'Staff payment';
+
+      if (amount < 0 || Number.isNaN(amount)) {
+        alert('Please enter valid payment amount');
+        return;
+      }
+
+      assignment.paymentStatus = 'Paid';
+      assignment.paymentAmount = amount;
+      assignment.paymentMode = mode;
+      assignment.paymentNote = note;
+      assignment.paymentDate = new Date().toISOString().slice(0, 10);
+
+      saveData();
+      hideStaffPaymentCard();
+      showToast('Staff payment saved');
+      renderAll();
+    }
+
+    function markUnpaid(assignmentId) {
+      const assignment = assignments.find(a => a.id === assignmentId);
+      if (!assignment) return;
+      assignment.paymentStatus = 'Pending';
+      assignment.paymentAmount = 0;
+      assignment.paymentMode = '';
+      assignment.paymentNote = '';
+      assignment.paymentDate = '';
+      saveData();
+      showToast('Payment moved to pending');
+      renderAll();
+    }
+
+    function setPaymentTab(tab) {
+      paymentTab = tab;
+      renderPayments();
+    }
+
+    function getEvent(id) {
+      return events.find(e => e.id === id);
+    }
+
+    function getStaff(id) {
+      return staff.find(s => s.id === id);
+    }
+
+    function calculateEventStats(event) {
+      const reqs = getEventRequirements(event.id);
+      const eventAssignments = assignments.filter(a => a.eventId === event.id);
+      const totalRequired = reqs.reduce((sum, r) => sum + Number(r.required || 0), 0) || Number(event.required || 0);
+      const assignedCount = eventAssignments.length;
+      const pendingCount = Math.max(totalRequired - assignedCount, 0);
+      const staffCost = eventAssignments.reduce((sum, a) => {
+        const req = getRequirement(a.requirementId);
+        const person = getStaff(a.staffId);
+        return sum + (req?.rate ?? person?.rate ?? event.rate ?? 0);
+      }, 0);
+      const clientBill = eventAssignments.reduce((sum, a) => {
+        const req = getRequirement(a.requirementId);
+        return sum + (req?.clientRate ?? event.clientRate ?? event.rate ?? 0);
+      }, 0);
+      const profit = clientBill - staffCost;
+      const clientPending = Math.max(clientBill - (event.clientPaid || 0), 0);
+      return { totalRequired, assignedCount, pendingCount, staffCost, clientBill, profit, clientPending };
+    }
+
+    function renderDashboard() {
+      const required = events.reduce((sum, e) => sum + calculateEventStats(e).totalRequired, 0);
+      const assigned = assignments.length;
+      const pending = Math.max(required - assigned, 0);
+      const availableStaff = staff.filter(person => person.status === 'Available').length;
+
+      const pendingPayment = assignments
+        .filter(a => a.status === 'Present' && a.paymentStatus !== 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (req?.rate ?? person?.rate ?? 0);
+        }, 0);
+
+      let totalProfit = 0;
+      let totalBill = 0;
+      let totalStaffCost = 0;
+      let clientPending = 0;
+
+      events.forEach(event => {
+        const stats = calculateEventStats(event);
+        totalStaffCost += stats.staffCost;
+        totalBill += stats.clientBill;
+        totalProfit += stats.profit;
+        clientPending += stats.clientPending;
+      });
+
+      const todayLabel = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      document.getElementById('homeDate').textContent = todayLabel;
+      document.getElementById('todayEvents').textContent = events.length;
+      document.getElementById('requiredStaff').textContent = required;
+      document.getElementById('pendingStaff').textContent = pending;
+      document.getElementById('homeHeroBill').textContent = '₹' + totalBill;
+      document.getElementById('homeHeroCost').textContent = '₹' + totalStaffCost;
+      document.getElementById('homeHeroProfit').textContent = '₹' + totalProfit;
+      document.getElementById('homeClientCount').textContent = clients.length;
+      document.getElementById('homeStaffCount').textContent = staff.length;
+      document.getElementById('homeAvailableCount').textContent = availableStaff;
+      document.getElementById('homeClientDue').textContent = '₹' + clientPending;
+
+      document.getElementById('homeAlertBox').innerHTML = pending > 0
+        ? `<div class="alert-card"><strong>⚠️ ${pending} staff pending</strong><div>Open Assign page and complete staff before duty time.</div></div>`
+        : `<div class="alert-card good"><strong>✅ All requirements covered</strong><div>No pending staff in current events.</div></div>`;
+
+      const focusEvent = [...events].sort((a, b) => (a.date || '').localeCompare(b.date || ''))[0];
+      if (focusEvent) {
+        const focusStats = calculateEventStats(focusEvent);
+        const focusAssigned = focusStats.assignedCount;
+        const focusPending = focusStats.pendingCount;
+        document.getElementById('homeFocusEvent').innerHTML = `
+          <div class="home-focus-card">
+            <div class="focus-label">NEXT IMPORTANT EVENT</div>
+            <div class="home-event-head">
+              <div>
+                <strong>${focusEvent.name}</strong>
+                <div class="muted">${focusEvent.client} • ${focusEvent.date || 'No date'} • ${focusEvent.time || 'No time'}</div>
+                <div class="muted">${focusEvent.location || 'No location'}</div>
+              </div>
+              <span class="status ${focusPending > 0 ? 'red' : 'green'}">${focusPending > 0 ? focusPending + ' Pending' : 'Ready'}</span>
+            </div>
+            <div class="summary-box">
+              <div><span>Required</span><b>${focusStats.totalRequired}</b></div>
+              <div><span>Assigned</span><b>${focusAssigned}</b></div>
+              <div><span>Pending</span><b>${focusPending}</b></div>
+            </div>
+            <button class="secondary" onclick="openEventDetail(${focusEvent.id})">Open Event</button>
+          </div>
+        `;
+      } else {
+        document.getElementById('homeFocusEvent').innerHTML = '';
+      }
+
+      document.getElementById('dashboardEvents').innerHTML = events.map(event => {
+        const stats = calculateEventStats(event);
+        const assignedCount = stats.assignedCount;
+        const pendingCount = stats.pendingCount;
+        const staffCost = stats.staffCost;
+        const clientBill = stats.clientBill;
+        const profit = stats.profit;
+        const fillPercent = stats.totalRequired ? Math.min((assignedCount / stats.totalRequired) * 100, 100) : 0;
+        const statusText = pendingCount > 0 ? `${pendingCount} Pending` : 'Ready';
+        const statusClass = pendingCount > 0 ? 'red' : 'green';
+
+        return `
+          <div class="home-event-card">
+            <div class="home-event-head">
+              <div>
+                <strong>${event.name}</strong>
+                <div class="muted">${event.client} • ${event.location}</div>
+                <div class="muted">${event.date || 'No date'} • ${event.time || 'No time'}</div>
+              </div>
+              <span class="status ${statusClass}">${statusText}</span>
+            </div>
+
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${fillPercent}%"></div>
+            </div>
+
+            <div class="summary-box">
+              <div><span>Required</span><b>${stats.totalRequired}</b></div>
+              <div><span>Assigned</span><b>${assignedCount}</b></div>
+              <div><span>Pending</span><b>${pendingCount}</b></div>
+            </div>
+            <div class="summary-box">
+              <div><span>Bill</span><b>₹${clientBill}</b></div>
+              <div><span>Cost</span><b>₹${staffCost}</b></div>
+              <div><span>Profit</span><b>₹${profit}</b></div>
+            </div>
+            <button class="secondary" onclick="showPageById('assign')">Assign Staff</button>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No events yet</strong><div class="muted">Add your first event from Events page.</div></div>';
+    }
+
+    function callLead(index) {
+      const lead = leads[index];
+      if (!lead) return;
+      window.location.href = `tel:${lead.mobile}`;
+    }
+
+    function whatsappLead(index) {
+      const lead = leads[index];
+      if (!lead) return;
+      const phone = lead.mobile.replace(/[^0-9]/g, '');
+      const message = `Namaste ${lead.client}, aapki manpower requirement ke liye call/message kar raha hu.`;
+      window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function updateLeadStatus(index, status) {
+      if (!leads[index]) return;
+      leads[index].status = status;
+      saveData();
+      showToast(`Lead marked ${status}`);
+      renderAll();
+    }
+
+    function renderLeads() {
+      const leadList = document.getElementById('leadList');
+      if (!leadList) return;
+
+      const search = (document.getElementById('leadSearch')?.value || '').toLowerCase();
+      const statusFilter = document.getElementById('leadStatusFilter')?.value || 'All';
+
+      const filteredLeads = leads
+        .map((lead, originalIndex) => ({ ...lead, originalIndex }))
+        .filter(lead => {
+          const matchesSearch = lead.client.toLowerCase().includes(search) ||
+            lead.mobile.toLowerCase().includes(search) ||
+            (lead.location || '').toLowerCase().includes(search) ||
+            (lead.staff || '').toLowerCase().includes(search) ||
+            (lead.date || '').toLowerCase().includes(search);
+          const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
+          return matchesSearch && matchesStatus;
+        });
+
+      document.getElementById('leadTotalCount').textContent = leads.length;
+      document.getElementById('leadNewCount').textContent = leads.filter(l => l.status === 'New').length;
+      document.getElementById('leadConfirmedCount').textContent = leads.filter(l => l.status === 'Confirmed').length;
+      document.getElementById('leadLostCount').textContent = leads.filter(l => l.status === 'Lost').length;
+
+      leadList.innerHTML = filteredLeads.map((lead, index) => {
+        const statusClass = lead.status === 'Confirmed' ? 'green' : (lead.status === 'Lost' ? 'red' : '');
+        return `
+          <div class="lead-card">
+            <div class="lead-card-head">
+              <div>
+                <strong>#${index + 1} ${lead.client}</strong>
+                <div class="muted">${lead.mobile} • ${lead.location || 'No location'}</div>
+                <div class="muted">${lead.date || 'No date'} • Need: ${lead.staff || 'Not added'}</div>
+              </div>
+              <span class="status ${statusClass}">${lead.status}</span>
+            </div>
+            <div class="lead-actions">
+              <button class="secondary" onclick="callLead(${lead.originalIndex})">📞 Call</button>
+              <button class="secondary" onclick="whatsappLead(${lead.originalIndex})">💬 WhatsApp</button>
+              <button class="success" onclick="convertLeadToEvent(${lead.originalIndex})">Convert</button>
+              <button onclick="deleteLead(${lead.originalIndex})">Delete</button>
+            </div>
+            <div class="lead-actions">
+              <button onclick="updateLeadStatus(${lead.originalIndex}, 'Contacted')">Contacted</button>
+              <button onclick="updateLeadStatus(${lead.originalIndex}, 'Lost')">Lost</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No leads found</strong><div class="muted">Try another search or add a new enquiry.</div></div>';
+    }
+
+    function convertLeadToEvent(index) {
+      const lead = leads[index];
+      if (!lead) return;
+
+      const existingClient = clients.find(c => c.name.toLowerCase() === lead.client.toLowerCase());
+      if (!existingClient) {
+        clients.push({
+          id: Date.now(),
+          name: lead.client,
+          mobile: lead.mobile,
+          type: 'Caterer',
+          city: lead.location || ''
+        });
+      }
+
+      const eventId = Date.now();
+      events.push({
+        id: eventId,
+        client: lead.client,
+        name: 'New Event',
+        date: lead.date,
+        time: 'Add time',
+        location: lead.location,
+        staffType: 'Waiter',
+        required: 1,
+        rate: 700,
+        clientRate: 1000,
+        clientPaid: 0
+      });
+      requirements.push({ id: eventId + 1, eventId, staffType: 'Waiter', required: 1, rate: 700, clientRate: 1000 });
+      lead.status = 'Confirmed';
+      saveData();
+      renderAll();
+      showToast('Lead converted to event. Edit details in Events page.');
+    }
+
+    function renderEvents() {
+      const search = (document.getElementById('eventSearch')?.value || '').toLowerCase();
+      const statusFilter = document.getElementById('eventStatusFilter')?.value || 'All';
+
+      let totalPendingStaff = 0;
+      let totalBill = 0;
+      let totalProfit = 0;
+
+      events.forEach(event => {
+        const stats = calculateEventStats(event);
+        totalPendingStaff += stats.pendingCount;
+        totalBill += stats.clientBill;
+        totalProfit += stats.profit;
+      });
+
+      document.getElementById('eventTotalCount').textContent = events.length;
+      document.getElementById('eventPendingStaffTotal').textContent = totalPendingStaff;
+      document.getElementById('eventBillTotal').textContent = '₹' + totalBill;
+      document.getElementById('eventProfitTotal').textContent = '₹' + totalProfit;
+
+      const filteredEvents = events.filter(event => {
+        const stats = calculateEventStats(event);
+        const assignedCount = stats.assignedCount;
+        const pendingCount = stats.pendingCount;
+        const status = pendingCount <= 0 ? 'Staff Assigned' : 'Staff Pending';
+        const matchesSearch = event.name.toLowerCase().includes(search) ||
+          event.client.toLowerCase().includes(search) ||
+          (event.location || '').toLowerCase().includes(search) ||
+          (event.date || '').toLowerCase().includes(search) ||
+          event.staffType.toLowerCase().includes(search);
+        const matchesStatus = statusFilter === 'All' || status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+
+      document.getElementById('eventList').innerHTML = filteredEvents.map(event => {
+        const stats = calculateEventStats(event);
+        const assignedCount = stats.assignedCount;
+        const pendingCount = stats.pendingCount;
+        const staffCost = stats.staffCost;
+        const clientBill = stats.clientBill;
+        const profit = stats.profit;
+        const clientPending = stats.clientPending;
+        const fillPercent = stats.totalRequired ? Math.min((assignedCount / stats.totalRequired) * 100, 100) : 0;
+
+        return `
+          <div class="event-card" onclick="openEventDetail(${event.id})">
+            <div class="event-card-head">
+              <div>
+                <strong>${event.name}</strong>
+                <div class="muted">${event.client} • ${event.date || 'No date'}</div>
+                <div class="muted">${event.location || 'No location'} • ${event.time || 'No time'}</div>
+              </div>
+              <div>
+                <span class="status ${pendingCount > 0 ? 'red' : 'green'}">${pendingCount > 0 ? 'Staff Pending' : 'Ready'}</span>
+                <span class="status ${clientPending > 0 ? 'red' : 'green'}">${clientPending > 0 ? 'Client Pending' : 'Paid'}</span>
+              </div>
+            </div>
+
+            <div class="progress-track"><div class="progress-fill" style="width:${fillPercent}%"></div></div>
+
+            <div class="summary-box">
+              <div><span>Required</span><b>${stats.totalRequired}</b></div>
+              <div><span>Assigned</span><b>${assignedCount}</b></div>
+              <div><span>Pending</span><b>${pendingCount}</b></div>
+            </div>
+            <div class="summary-box">
+              <div><span>Bill</span><b>₹${clientBill}</b></div>
+              <div><span>Pending</span><b>₹${clientPending}</b></div>
+              <div><span>Profit</span><b>₹${profit}</b></div>
+            </div>
+            <div class="event-action-row">
+              <button class="secondary" onclick="event.stopPropagation(); openEventDetail(${event.id})">Details</button>
+              <button class="secondary" onclick="event.stopPropagation(); markClientPaid(${event.id})">Payment</button>
+              <button onclick="event.stopPropagation(); deleteEvent(${event.id})">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No events found</strong><div class="muted">Try another search or add a new event.</div></div>';
+    }
+
+    function renderStaff() {
+      const search = (document.getElementById('staffSearch')?.value || '').toLowerCase();
+      const typeFilter = document.getElementById('staffTypeFilter')?.value || 'All';
+      const statusFilter = document.getElementById('staffStatusFilter')?.value || 'All';
+
+      const totalStaff = staff.length;
+      const availableStaff = staff.filter(person => person.status === 'Available').length;
+      const busyStaff = staff.filter(person => person.status === 'Busy').length;
+      const staffPendingPay = assignments
+        .filter(a => a.status === 'Present' && a.paymentStatus !== 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (req?.rate ?? person?.rate ?? 0);
+        }, 0);
+
+      document.getElementById('staffTotalCount').textContent = totalStaff;
+      document.getElementById('staffAvailableCount').textContent = availableStaff;
+      document.getElementById('staffBusyCount').textContent = busyStaff;
+      document.getElementById('staffPendingPay').textContent = '₹' + staffPendingPay;
+
+      const filteredStaff = staff.filter(person => {
+        const matchesSearch = person.name.toLowerCase().includes(search) ||
+          person.mobile.toLowerCase().includes(search) ||
+          person.type.toLowerCase().includes(search) ||
+          person.status.toLowerCase().includes(search);
+        const matchesType = typeFilter === 'All' || person.type === typeFilter;
+        const matchesStatus = statusFilter === 'All' || person.status === statusFilter;
+        return matchesSearch && matchesType && matchesStatus;
+      });
+
+      if (!filteredStaff.length) {
+        document.getElementById('staffList').innerHTML = '<div class="list-item"><strong>No staff found</strong><div class="muted">Try another search or filter.</div></div>';
+        return;
+      }
+
+      document.getElementById('staffList').innerHTML = filteredStaff.map((person, index) => {
+        const personAssignments = assignments.filter(a => a.staffId === person.id);
+        const totalEarning = personAssignments
+          .filter(a => a.status === 'Present')
+          .reduce((sum, a) => {
+            const req = getRequirement(a.requirementId);
+            return sum + (req?.rate ?? person.rate ?? 0);
+          }, 0);
+        const paidAmount = personAssignments
+          .filter(a => a.paymentStatus === 'Paid')
+          .reduce((sum, a) => sum + (a.paymentAmount || getRequirement(a.requirementId)?.rate || person.rate || 0), 0);
+        const totalAdvance = staffAdvances
+          .filter(a => a.staffId === person.id)
+          .reduce((sum, a) => sum + a.amount, 0);
+        const pendingAmount = Math.max(totalEarning - paidAmount - totalAdvance, 0);
+        const statusClass = person.status === 'Available' ? 'green' : (person.status === 'Inactive' || person.status === 'Blacklisted' ? 'red' : '');
+        const initials = person.name
+          .split(' ')
+          .map(part => part[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+
+        return `
+          <div class="staff-name-card" onclick="openStaffDetail(${person.id})">
+            <div class="staff-name-main">
+              <div class="staff-avatar">${initials}</div>
+              <div class="staff-name-info">
+                <strong>#${index + 1} ${person.name}</strong>
+                <div class="muted">${person.type} • ${person.mobile} • Pending ₹${pendingAmount}</div>
+                <span class="status ${statusClass}">${person.status}</span>
+              </div>
+            </div>
+            <div class="staff-arrow">›</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setAssignTab(tab) {
+      assignTab = tab;
+      renderAssignPage();
+    }
+
+    function renderAssignOptions() {
+      renderAssignPage();
+    }
+
+    function assignStaffDirect(staffId) {
+      document.getElementById('assignStaff')?.remove();
+      const hiddenSelect = document.createElement('select');
+      hiddenSelect.id = 'assignStaff';
+      hiddenSelect.style.display = 'none';
+      hiddenSelect.innerHTML = `<option value="${staffId}" selected></option>`;
+      document.body.appendChild(hiddenSelect);
+      assignStaffToEvent();
+      hiddenSelect.remove();
+      renderAssignPage();
+    }
+
+    function renderAssignPage() {
+      const eventSelect = document.getElementById('assignEvent');
+      if (!eventSelect) return;
+
+      const selectedEventId = Number(eventSelect.value) || events[0]?.id;
+      eventSelect.innerHTML = events.map(event => `
+        <option value="${event.id}" ${event.id === selectedEventId ? 'selected' : ''}>${event.name}</option>
+      `).join('');
+
+      const selectedEvent = events.find(e => e.id === selectedEventId) || events[0];
+      if (!selectedEvent) {
+        document.getElementById('assignEventSummary').innerHTML = '<div class="list-item"><strong>No event found</strong><div class="muted">Add event first.</div></div>';
+        document.getElementById('assignAvailablePanel').innerHTML = '';
+        document.getElementById('assignmentList').innerHTML = '';
+        return;
+      }
+
+      const eventReqs = getEventRequirements(selectedEvent.id);
+      const reqSelect = document.getElementById('assignRequirement');
+      const selectedReqId = reqSelect?.value || eventReqs[0]?.id;
+      if (reqSelect) {
+        reqSelect.innerHTML = eventReqs.map(req => `<option value="${req.id}" ${String(req.id) === String(selectedReqId) ? 'selected' : ''}>${req.staffType} - ${req.required}</option>`).join('');
+      }
+      const selectedReq = eventReqs.find(r => String(r.id) === String(selectedReqId)) || eventReqs[0];
+      const eventAssignments = assignments.filter(a => a.eventId === selectedEvent.id && (!selectedReq || String(a.requirementId || '') === String(selectedReq.id)));
+      const assignedCount = eventAssignments.length;
+      const totalRequired = selectedReq?.required || selectedEvent.required;
+      const pendingCount = Math.max(totalRequired - assignedCount, 0);
+      const fillPercent = totalRequired ? Math.min((assignedCount / totalRequired) * 100, 100) : 0;
+      const staffCost = assignedCount * (selectedReq?.rate || selectedEvent.rate || 0);
+      const clientBill = assignedCount * (selectedReq?.clientRate || selectedEvent.clientRate || selectedEvent.rate || 0);
+      const reqProfit = clientBill - staffCost;
+
+      document.getElementById('assignEventSummary').innerHTML = `
+        <div class="assign-event-card">
+          <div class="staff-title-row">
+            <strong>${selectedEvent.name}</strong>
+            <span class="status ${pendingCount > 0 ? 'red' : 'green'}">${pendingCount > 0 ? pendingCount + ' Pending' : 'Ready'}</span>
+          </div>
+          <div class="muted">${selectedEvent.client} • ${selectedEvent.date || 'No date'} • ${selectedEvent.location || 'No location'}</div>
+          <div class="progress-track"><div class="progress-fill" style="width:${fillPercent}%"></div></div>
+          <div class="summary-box">
+            <div><span>Required</span><b>${totalRequired}</b></div>
+            <div><span>Assigned</span><b>${assignedCount}</b></div>
+            <div><span>Pending</span><b>${pendingCount}</b></div>
+          </div>
+          <div class="summary-box">
+            <div><span>Role</span><b>${selectedReq?.staffType || selectedEvent.staffType}</b></div>
+            <div><span>Rate</span><b>₹${selectedReq?.rate || selectedEvent.rate || 0}</b></div>
+            <div><span>Client</span><b>₹${selectedReq?.clientRate || selectedEvent.clientRate || 0}</b></div>
+          </div>
+          <div class="summary-box">
+            <div><span>Cost</span><b>₹${staffCost}</b></div>
+            <div><span>Bill</span><b>₹${clientBill}</b></div>
+            <div><span>Profit</span><b>₹${reqProfit}</b></div>
+          </div>
+        </div>
+      `;
+
+      const search = (document.getElementById('assignStaffSearch')?.value || '').toLowerCase();
+      const filter = document.getElementById('assignStaffFilter')?.value || 'All';
+      const assignedStaffIds = eventAssignments.map(a => a.staffId);
+
+      let displayStaff = staff.filter(person => {
+        const matchesSearch = person.name.toLowerCase().includes(search) ||
+          person.mobile.toLowerCase().includes(search) ||
+          person.type.toLowerCase().includes(search) ||
+          person.status.toLowerCase().includes(search);
+        const isMatch = person.type.toLowerCase() === (selectedReq?.staffType || selectedEvent.staffType).toLowerCase();
+        const isAssignedToEvent = assignedStaffIds.includes(person.id);
+        const isAvailable = person.status === 'Available';
+        const matchesFilter = filter === 'All' ||
+          (filter === 'Match' && isMatch) ||
+          (filter === 'Available' && isAvailable) ||
+          (filter === 'NotAssigned' && !isAssignedToEvent);
+        return matchesSearch && matchesFilter;
+      });
+
+      displayStaff.sort((a, b) => {
+        const neededType = (selectedReq?.staffType || selectedEvent.staffType).toLowerCase();
+        const aMatch = a.type.toLowerCase() === neededType;
+        const bMatch = b.type.toLowerCase() === neededType;
+        const aAssigned = assignedStaffIds.includes(a.id);
+        const bAssigned = assignedStaffIds.includes(b.id);
+        if (aAssigned !== bAssigned) return aAssigned ? 1 : -1;
+        if (aMatch !== bMatch) return aMatch ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      document.getElementById('assignAvailableTab').classList.toggle('active-tab', assignTab === 'available');
+      document.getElementById('assignAssignedTab').classList.toggle('active-tab', assignTab === 'assigned');
+      document.getElementById('assignAvailablePanel').classList.toggle('hidden', assignTab !== 'available');
+      document.getElementById('assignmentList').classList.toggle('hidden', assignTab !== 'assigned');
+
+      document.getElementById('assignAvailablePanel').innerHTML = displayStaff.map(person => {
+        const isMatch = person.type.toLowerCase() === (selectedReq?.staffType || selectedEvent.staffType).toLowerCase();
+        const isAssignedToEvent = assignedStaffIds.includes(person.id);
+        const sameDateAssignment = assignments.find(a => {
+          const assignedEvent = getEvent(a.eventId);
+          return a.staffId === person.id && assignedEvent && assignedEvent.date === selectedEvent.date && a.eventId !== selectedEvent.id;
+        });
+        const unavailable = person.status === 'Inactive' || person.status === 'Blacklisted' || sameDateAssignment;
+        const initials = person.name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+
+        return `
+          <div class="assign-staff-card">
+            <div class="assign-staff-main">
+              <div class="staff-avatar">${initials}</div>
+              <div class="staff-name-info">
+                <strong>${person.name}</strong>
+                <div class="muted">${person.mobile} • ${person.type} • ₹${selectedReq?.rate ?? person.rate}</div>
+                <div class="assign-chip-row">
+                  <span class="assign-chip ${isMatch ? 'good' : 'bad'}">${isMatch ? 'Match' : 'Other'}</span>
+                  <span class="assign-chip ${person.status === 'Available' ? 'good' : 'bad'}">${person.status}</span>
+                  ${isAssignedToEvent ? '<span class="assign-chip good">Assigned</span>' : ''}
+                  ${sameDateAssignment ? '<span class="assign-chip bad">Busy Same Date</span>' : ''}
+                </div>
+              </div>
+            </div>
+            <div class="assign-staff-actions">
+              ${isAssignedToEvent
+                ? '<button disabled>Added</button>'
+                : unavailable
+                  ? '<button disabled>Blocked</button>'
+                  : `<button class="success" onclick="assignStaffDirect(${person.id})">Assign</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No staff found</strong><div class="muted">Try another search or filter.</div></div>';
+
+      document.getElementById('assignmentList').innerHTML = eventAssignments.map(a => {
+        const person = getStaff(a.staffId);
+        if (!person) return '';
+        const attendanceClass = a.status === 'Present' ? 'green' : (a.status === 'Absent' ? 'red' : '');
+        const paymentClass = a.paymentStatus === 'Paid' ? 'green' : 'red';
+        return `
+          <div class="duty-card">
+            <div class="duty-card-header">
+              <div>
+                <strong>${person.name}</strong>
+                <div class="muted">${person.mobile} • ${person.type} • ₹${getRequirement(a.requirementId)?.rate ?? person.rate}</div>
+              </div>
+              <div>
+                <span class="status ${attendanceClass}">${a.status}</span>
+                <span class="status ${paymentClass}">${a.paymentStatus}</span>
+              </div>
+            </div>
+            <div class="duty-action-row">
+              <button class="secondary" onclick="sendWhatsAppDuty(${a.id})">💬 Duty Msg</button>
+              <button class="success" onclick="markAttendance(${a.id}, 'Present'); renderAssignPage();">✓ Present</button>
+              <button onclick="markAttendance(${a.id}, 'Absent'); renderAssignPage();">✕ Absent</button>
+              <button onclick="deleteAssignment(${a.id}); renderAssignPage();">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No staff assigned yet</strong><div class="muted">Use Available Staff tab to assign.</div></div>';
+    }
+
+    function renderReports() {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const todayEvents = events.filter(event => event.date === today);
+      const upcomingEvents = events.filter(event => event.date > today);
+
+      let totalPendingStaff = 0;
+      let totalBill = 0;
+      let totalProfit = 0;
+      let totalPendingClientPayment = 0;
+
+      events.forEach(event => {
+        const stats = calculateEventStats(event);
+        totalPendingStaff += stats.pendingCount;
+        totalBill += stats.clientBill;
+        totalProfit += stats.profit;
+        totalPendingClientPayment += stats.clientPending;
+      });
+
+      const pendingPayment = assignments
+        .filter(a => a.status === 'Present' && a.paymentStatus !== 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (req?.rate ?? person?.rate ?? 0);
+        }, 0);
+
+      document.getElementById('reportTodayEvents').textContent = todayEvents.length;
+      document.getElementById('reportUpcomingEvents').textContent = upcomingEvents.length;
+      document.getElementById('reportPendingStaff').textContent = totalPendingStaff;
+      document.getElementById('reportPendingPayment').textContent = '₹' + pendingPayment;
+      document.getElementById('reportPendingClientPayment').textContent = '₹' + totalPendingClientPayment;
+      document.getElementById('reportTotalBill').textContent = '₹' + totalBill;
+      document.getElementById('reportTotalProfit').textContent = '₹' + totalProfit;
+
+      document.getElementById('reportTodayList').innerHTML = renderReportEventList(todayEvents, 'No events today');
+      document.getElementById('reportUpcomingList').innerHTML = renderReportEventList(upcomingEvents, 'No upcoming events');
+      document.getElementById('reportPendingList').innerHTML = renderReportEventList(events.filter(event => {
+        const assignedCount = assignments.filter(a => a.eventId === event.id).length;
+        return calculateEventStats(event).pendingCount > 0;
+      }), 'No pending staff events');
+    }
+
+    function renderReportEventList(list, emptyText) {
+      if (!list.length) return `<div class="list-item"><strong>${emptyText}</strong></div>`;
+
+      return list.map(event => {
+        const stats = calculateEventStats(event);
+        const assignedCount = stats.assignedCount;
+        const pendingCount = stats.pendingCount;
+        const staffCost = stats.staffCost;
+        const clientBill = stats.clientBill;
+        const profit = stats.profit;
+
+        return `
+          <div class="list-item">
+            <strong>${event.name}</strong>
+            <div class="muted">${event.client} • ${event.date} • ${event.location}</div>
+            <div class="muted">Required: ${stats.totalRequired} • Assigned: ${assignedCount} • Pending: ${pendingCount}</div>
+            <div class="muted">Bill: ₹${clientBill} • Received: ₹${event.clientPaid || 0} • Pending: ₹${Math.max(clientBill - (event.clientPaid || 0), 0)}</div>
+            <div class="muted">Cost: ₹${staffCost} • Profit: ₹${profit}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPaymentEventFilter() {
+      const select = document.getElementById('paymentEventFilter');
+      if (!select) return;
+      const selected = select.value || 'All';
+      select.innerHTML = '<option value="All">All Events</option>' + events.map(event => `
+        <option value="${event.id}" ${String(event.id) === selected ? 'selected' : ''}>${event.name}</option>
+      `).join('');
+    }
+
+    function renderPayments() {
+      const presentCount = assignments.filter(a => a.status === 'Present').length;
+      const absentCount = assignments.filter(a => a.status === 'Absent').length;
+      const pendingAmount = assignments
+        .filter(a => a.status === 'Present' && a.paymentStatus !== 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (req?.rate ?? person?.rate ?? 0);
+        }, 0);
+      const paidAmount = assignments
+        .filter(a => a.paymentStatus === 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (a.paymentAmount || req?.rate || person?.rate || 0);
+        }, 0);
+
+      document.getElementById('paymentPresentCount').textContent = presentCount;
+      document.getElementById('paymentAbsentCount').textContent = absentCount;
+      document.getElementById('paymentPendingAmount').textContent = '₹' + pendingAmount;
+      document.getElementById('paymentPaidAmount').textContent = '₹' + paidAmount;
+
+      renderPaymentEventFilter();
+
+      const search = (document.getElementById('paymentSearch')?.value || '').toLowerCase();
+      const eventFilter = document.getElementById('paymentEventFilter')?.value || 'All';
+
+      document.getElementById('paymentAllTab')?.classList.toggle('active-tab', paymentTab === 'all');
+      document.getElementById('paymentPendingTab')?.classList.toggle('active-tab', paymentTab === 'pending');
+      document.getElementById('paymentPaidTab')?.classList.toggle('active-tab', paymentTab === 'paid');
+
+      const paymentItems = assignments.filter(a => {
+        const event = getEvent(a.eventId);
+        const person = getStaff(a.staffId);
+        if (!event || !person) return false;
+        const matchesSearch = person.name.toLowerCase().includes(search) ||
+          person.mobile.toLowerCase().includes(search) ||
+          event.name.toLowerCase().includes(search) ||
+          event.client.toLowerCase().includes(search);
+        const matchesEvent = eventFilter === 'All' || String(a.eventId) === eventFilter;
+        const matchesTab = paymentTab === 'all' ||
+          (paymentTab === 'pending' && a.paymentStatus !== 'Paid') ||
+          (paymentTab === 'paid' && a.paymentStatus === 'Paid');
+        return matchesSearch && matchesEvent && matchesTab;
+      });
+
+      document.getElementById('paymentList').innerHTML = paymentItems.map(a => {
+        const event = getEvent(a.eventId);
+        const person = getStaff(a.staffId);
+        const personAdvances = staffAdvances.filter(adv => adv.staffId === person.id).reduce((sum, adv) => sum + adv.amount, 0);
+        const req = getRequirement(a.requirementId);
+        const grossPay = a.status === 'Present' ? (req?.rate ?? person.rate) : 0;
+        const netPay = a.paymentStatus === 'Paid' ? (a.paymentAmount || 0) : Math.max(grossPay - personAdvances, 0);
+        const paymentClass = a.paymentStatus === 'Paid' ? 'green' : 'red';
+        const attendanceClass = a.status === 'Present' ? 'green' : (a.status === 'Absent' ? 'red' : '');
+
+        return `
+          <div class="payment-card">
+            <div class="payment-card-head">
+              <div>
+                <strong>${person.name}</strong>
+                <div class="muted">${person.mobile} • ${person.type}</div>
+                <div class="muted">${event.name} • ${event.date || 'No date'}</div>
+              </div>
+              <div>
+                <span class="status ${attendanceClass}">${a.status}</span>
+                <span class="status ${paymentClass}">${a.paymentStatus}</span>
+              </div>
+            </div>
+
+            <div class="summary-box">
+              <div><span>Rate</span><b>₹${getRequirement(a.requirementId)?.rate ?? person.rate}</b></div>
+              <div><span>Advance</span><b>₹${personAdvances}</b></div>
+              <div><span>Net Pay</span><b>₹${netPay}</b></div>
+            </div>
+            <div class="muted">Paid: ₹${a.paymentAmount || 0} • Mode: ${a.paymentMode || '-'} • Date: ${a.paymentDate || '-'}</div>
+            <div class="muted">Note: ${a.paymentNote || '-'}</div>
+
+            <div class="payment-action-row">
+              <button class="success" onclick="markAttendance(${a.id}, 'Present')">✓ Present</button>
+              <button onclick="markAttendance(${a.id}, 'Absent')">✕ Absent</button>
+              <button class="secondary" onclick="markPaid(${a.id})">₹ Pay Staff</button>
+              <button onclick="markUnpaid(${a.id})">Move Pending</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<div class="list-item"><strong>No payment records found</strong><div class="muted">Assigned staff payment records will show here.</div></div>';
+    }
+
+    function renderMore() {
+      const pendingStaff = events.reduce((sum, event) => sum + calculateEventStats(event).pendingCount, 0);
+      const pendingStaffPay = assignments
+        .filter(a => a.status === 'Present' && a.paymentStatus !== 'Paid')
+        .reduce((sum, a) => {
+          const req = getRequirement(a.requirementId);
+          const person = getStaff(a.staffId);
+          return sum + (req?.rate ?? person?.rate ?? 0);
+        }, 0);
+      const clientDue = events.reduce((sum, event) => sum + calculateEventStats(event).clientPending, 0);
+      const openLeads = leads.filter(l => l.status !== 'Confirmed' && l.status !== 'Lost').length;
+
+      const pendingStaffEl = document.getElementById('morePendingStaff');
+      const pendingStaffPayEl = document.getElementById('morePendingStaffPay');
+      const clientDueEl = document.getElementById('moreClientDue');
+      const leadCountEl = document.getElementById('moreLeadCount');
+
+      if (pendingStaffEl) pendingStaffEl.textContent = pendingStaff;
+      if (pendingStaffPayEl) pendingStaffPayEl.textContent = '₹' + pendingStaffPay;
+      if (clientDueEl) clientDueEl.textContent = '₹' + clientDue;
+      if (leadCountEl) leadCountEl.textContent = openLeads;
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderLeads();
+      renderClients();
+      renderEvents();
+      renderClientDropdown();
+      renderStaff();
+      renderAssignOptions();
+      renderPayments();
+      renderReports();
+      renderMore();
+    }
+
+    toggleStaffSideButton('dashboard');
+    renderAll();
+  </script>
+</body>
+</html>
